@@ -1,2 +1,2 @@
-openpyxl
-pint
+openpyxl==2.3.3
+pint==0.6

@@ -16,6 +16,7 @@ None.
 
 ```bash
 # via distutils
+pip install -r requirements.txt
 python setup.py install
 ```
 
