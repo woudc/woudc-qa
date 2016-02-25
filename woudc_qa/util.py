@@ -45,7 +45,6 @@
 
 # Common utility functions
 
-import os
 import logging
 import csv
 from pint import UnitRegistry
@@ -64,7 +63,7 @@ def get_extcsv_value(
                     ):
     """
     get value or values from extcsv
-    
+
     :param extcsv: woudc_extcsv.Reader object
     :param table: table to retrieve data from
     :param table_index: index of table
@@ -73,7 +72,7 @@ def get_extcsv_value(
     :param raw: return raw form
     :returns: value or list of values
     """
-    
+
     if table_index > 1:
         table = '%s%s' % (table, table_index)
 
@@ -85,8 +84,8 @@ def get_extcsv_value(
                     value = extcsv.sections[table][field]
                     return value
                 except Exception, err:
-                    msg = 'Unable to get value for table: %s, field: %s. Due to: %s.'\
-                    % (table, field, str(err))
+                    msg = 'Unable to get value for table: %s, field: %s. \
+                        Due to: %s.' % (table, field, str(err))
                     LOGGER.error(msg)
                     raise err(msg)
         return value
@@ -114,7 +113,7 @@ def get_extcsv_value(
                         raise err(msg)
         return value
 
-        
+
 def set_extcsv_value(
                     extcsv,
                     table,
@@ -125,7 +124,7 @@ def set_extcsv_value(
                     ):
     """
     update extcsv with given value(s)
-    
+
     :param extcsv: woudc_extcsv.Reader object to be updated
     :param table: table to be updated
     :param table_index: index of table to be updated
@@ -133,16 +132,16 @@ def set_extcsv_value(
     :param value: singe value or a list of values (profile)
     :returns: updated extcsv
     """
-    
+
     if table_index > 1:
         table = '%s%s' % (table, table_index)
-    
-    if not isinstance(value, list): #  not a list/profile
+
+    if not isinstance(value, list):  # not a list/profile
         if mode == 'add':
-            extcsv.sections[table] = {field : str(value)}
+            extcsv.sections[table] = {field: str(value)}
         else:
             extcsv.sections[table][field] = str(value)
-    else: #  profile
+    else:  # profile
         # update profile with new values
         try:
             body = get_extcsv_value(
@@ -198,28 +197,29 @@ def set_extcsv_value(
         set_extcsv_value(extcsv, table, '_raw', value)
 
     return extcsv
-        
+
+
 def unit_converter(value, from_unit, to_unit):
     """
     stub for using Pint to handle units and conversions
-    
+
     :param from_unit: from unit
     :param to_unit: to unit
     :param value: value to be converted
     :returns: converted value in to unit
     """
-    # define new units
-    #TODO
-
+    # define new units in registry
+    # TODO
+    ureg = UnitRegistry()
     # convert
     Q_ = ureg.Quantity
     src = None
     dst = None
     # lookup the registry for the unit def
     if from_unit == 'degC':
-        src = ureg.degC
+        src = Q_.degC
     if to_unit == 'kelvin':
-        dst = ureg.kelvin
+        dst = Q_.kelvin
 
     try:
         home = Q_(value, src)
@@ -229,5 +229,5 @@ def unit_converter(value, from_unit, to_unit):
             (from_unit, to_unit, str(err))
         LOGGER.error(msg)
         raise err(msg)
-    
+
     return convert
