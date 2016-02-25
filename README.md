@@ -22,7 +22,22 @@ python setup.py install
 
 ## Usage
 
+### Command line interface
+```bash
+usage: woudc-qa.py [-h] --file FILE
+
+Execute Qa.
+
+optional arguments:
+  -h, --help   show this help message and exit
+  --file FILE  Path to extended CSV file to be quality assessed.
+
 ## Examples
+```python
+from woudc_qa import qa
+file_s = open(<path to your extended CSV file.>).read()
+qa_results = qa(file_s)
+```
 
 
 ## Development
@@ -69,7 +84,7 @@ python setup.py test
 # manually
 python run_tests.py
 # report test coverage
-coverage run --source woudc_extcsv setup.py test
+coverage run --source woudc_qa setup.py test
 coverage report -m
 ```
 
@@ -80,8 +95,7 @@ woudc_qa code conventions are as per
 
 ```bash
 # code should always pass the following
-find -type f -name "*.py" | xargs pep8 --ignore=E402
-find -type f -name "*.py" | xargs pyflakes
+find -type f -name "*.py" | xargs flake8
 ```
 
 ## Issues
