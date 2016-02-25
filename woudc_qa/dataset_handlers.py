@@ -45,9 +45,7 @@
 
 # Dataset handlers
 
-import os
 import logging
-from collections import OrderedDict
 from woudc_qa.util import \
     get_extcsv_value, \
     set_extcsv_value, \
@@ -58,21 +56,21 @@ __version__ = '0.1.1'
 
 LOGGER = logging.getLogger(__name__)
 
+
 class OzoneSondeHandler(object):
     """Handles OzoneSonde files."""
 
     def __init__(self, extcsv):
         """
         Init OzoneSondeHandler object
-        
+
         :param extcsv: woudc_extcsv.Reader object
         """
-        
+
         self._extcsv = extcsv
         # invoke transformation logic
         self.run_all_transformations()
-        
-        
+
     @property
     def extcsv(self):
         """
@@ -92,12 +90,11 @@ class OzoneSondeHandler(object):
         """
         run transformation and update extcsv in place
         """
-        
-        #self.pump_flow_rate_uc()
-        #self.response_time_uc()
-        #self.pump_temperature_uc()
-        self.derive_volume_mixing_ratio()
 
+        # self.pump_flow_rate_uc()
+        # self.response_time_uc()
+        # self.pump_temperature_uc()
+        self.derive_volume_mixing_ratio()
 
     def pump_flow_rate_uc(self):
         """
@@ -114,7 +111,6 @@ class OzoneSondeHandler(object):
             LOGGER.error(msg)
             raise err(msg)
 
-        
         try:
             PumpRate_f = float(PumpRate)
             PumpRate_f_uc = PumpRate_f / 100
@@ -122,17 +118,22 @@ class OzoneSondeHandler(object):
             msg = 'Invalid float: %s' % PumpRate
             LOGGER.error(msg)
             raise err(msg)
-        
+
         if PumpRate_f_uc is not None:
             try:
                 self.extcsv = \
-                    set_extcsv_value(self.extcsv, 'AUXILIARY_DATA', 'PumpRate', PumpRate_f_uc)
+                    set_extcsv_value(
+                        self.extcsv,
+                        'AUXILIARY_DATA',
+                        'PumpRate',
+                        PumpRate_f_uc
+                    )
             except Exception, err:
                 msg = 'Unable to set value for \
                 AUXILIARY_DATA.PumpRate. Due to: %s' % str(err)
                 LOGGER.error(msg)
                 raise err(msg)
-        
+
     def response_time_uc(self):
         """
         unit conversion for response time
@@ -142,10 +143,15 @@ class OzoneSondeHandler(object):
 
         try:
             OzoneSondeResponseTime = \
-                get_extcsv_value(self.extcsv, 'PREFLIGHT_SUMMARY', 'OzoneSondeResponseTime')
+                get_extcsv_value(
+                    self.extcsv,
+                    'PREFLIGHT_SUMMARY',
+                    'OzoneSondeResponseTime'
+                )
         except Exception, err:
-            msg = 'Unable to get PREFLIGHT_SUMMARY.OzoneSondeResponseTime \
-            value. Due to: %s' % str(err)
+            msg = \
+                'Unable to get PREFLIGHT_SUMMARY.OzoneSondeResponseTime \
+                value. Due to: %s' % str(err)
             LOGGER.error(msg)
             raise err(msg)
 
@@ -156,7 +162,7 @@ class OzoneSondeHandler(object):
             msg = 'Invalid float: %s' % OzoneSondeResponseTime
             LOGGER.error(msg)
             raise err(msg)
-        
+
         if OzoneSondeResponseTime_f_uc is not None:
             try:
                 self.extcsv = \
@@ -165,10 +171,11 @@ class OzoneSondeHandler(object):
                         'PREFLIGHT_SUMMARY',
                         'OzoneSondeResponseTime',
                         OzoneSondeResponseTime_f_uc
-                )
+                    )
             except Exception, err:
                 msg = 'Unable to set value for \
-                PREFLIGHT_SUMMARY.OzoneSondeResponseTime. Due to: %s' % str(err)
+                    PREFLIGHT_SUMMARY.OzoneSondeResponseTime. Due to: %s' \
+                    % str(err)
                 LOGGER.error(msg)
                 raise err(msg)
 
@@ -195,7 +202,7 @@ class OzoneSondeHandler(object):
             msg = 'Invalid float: %s' % value
             LOGGER.error(msg)
             raise err(msg)
-        
+
         if pump_temp_f_uc is not None:
             try:
                 self.extcsv = \
@@ -204,20 +211,20 @@ class OzoneSondeHandler(object):
                         'TABLE',
                         'Field',
                         pump_temp_f_uc
-                )
+                    )
             except Exception, err:
                 msg = 'Unable to set value for \
                 TABLE.Field. Due to: %s' % str(err)
                 LOGGER.error(msg)
                 raise err(msg)
-                
+
     def derive_volume_mixing_ratio(self):
         """
         derive and store volume mixing ration:
         Volume mixing ratio of ozone =
         (Partial pressure of ozone *10)/atmospheric pressure (hPa)
         """
-        
+
         try:
             ppO3 = get_extcsv_value(
                 self.extcsv,
@@ -230,7 +237,7 @@ class OzoneSondeHandler(object):
                 str(err)
             LOGGER.error(msg)
             raise err(msg)
-            
+
         try:
             pressure = get_extcsv_value(
                 self.extcsv,
@@ -262,7 +269,7 @@ class OzoneSondeHandler(object):
                 LOGGER.error(msg)
                 continue
             try:
-                vmr =(ppO3_f * 10) / p_f
+                vmr = (ppO3_f * 10) / p_f
             except Exception, err:
                 msg = 'Unable to calculate vmr with input, ppO3: %s,\
                     pressure: %s. Due to: %s.' % (ppO3_f, p_f, str(err))
@@ -273,24 +280,29 @@ class OzoneSondeHandler(object):
 
         # add derived values to extcsv
         self.extcsv = \
-            set_extcsv_value(self.extcsv, 'PROFILE', 'derived:VMR', vmrs, mode='add')
+            set_extcsv_value(
+                self.extcsv,
+                'PROFILE',
+                'derived:VMR',
+                vmrs,
+                mode='add'
+            )
 
-            
+
 class TotalOzoneHandler(object):
     """Handles TotalOzone files."""
 
     def __init__(self, extcsv):
         """
         Init TotalOzoneHandler object
-        
+
         :param extcsv: woudc_extcsv.Reader object
         """
-        
+
         self._extcsv = extcsv
         # invoke transformation logic
         self.run_all_transformations()
-        
-        
+
     @property
     def extcsv(self):
         """
