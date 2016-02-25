@@ -46,8 +46,6 @@
 
 # Perform Qa interactively
 
-import os
-import sys
 import logging
 import argparse
 from woudc_qa import \
@@ -56,7 +54,7 @@ from woudc_qa import \
 LOGGER = logging.getLogger(__name__)
 
 PARSER = \
-    argparse.ArgumentParser(description='Executes notification selection.')
+    argparse.ArgumentParser(description='Execute Qa.')
 
 PARSER.add_argument(
     '--file',
@@ -68,4 +66,3 @@ ARGS = PARSER.parse_args()
 if ARGS.file is not None:
     file_str = open(ARGS.file).read()
     print qa(file_str)
-
