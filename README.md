@@ -31,6 +31,7 @@ Execute Qa.
 optional arguments:
   -h, --help   show this help message and exit
   --file FILE  Path to extended CSV file to be quality assessed.
+```
 
 ## Examples
 ```python
