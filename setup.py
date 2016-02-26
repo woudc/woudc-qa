@@ -56,7 +56,8 @@ KEYWORDS = [
     'quality assessment'
 ]
 
-DESCRIPTION = '''Python package for automatically quality assessing WOUDC data.'''
+DESCRIPTION = \
+    '''Python package for automatically quality assessing WOUDC data.'''
 
 try:
     import pypandoc
