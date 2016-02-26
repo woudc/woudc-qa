@@ -1,4 +1,4 @@
-# WOUDC Automated Quality Assessment library
+# WOUDC Automatic Quality Assessment library
 
 Python package for automatically quality assessing WOUDC data based on defined rules.
 
