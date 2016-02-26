@@ -45,7 +45,7 @@
 
 import os
 import unittest
-from woudc_qa import qa, WOUDC_QA_RULES
+from woudc_qa import qa
 
 __dirpath = os.path.dirname(os.path.realpath(__file__))
 
@@ -57,7 +57,8 @@ def msg(test_id, test_description):
     """helper function to print out test id and desc"""
 
     return '%s: %s' % (test_id, test_description)
-    
+
+
 def read_file(filename, dataset=None):
     """helper function to open test file and return content as string"""
 
@@ -69,7 +70,7 @@ def read_file(filename, dataset=None):
 
 class QaTest(unittest.TestCase):
     """
-    Test WOUDC automatic quality assessment framework using 
+    Test WOUDC automatic quality assessment framework using
     OzoneSonde and TotalOzone data
     """
 
@@ -77,7 +78,6 @@ class QaTest(unittest.TestCase):
         """setup test fixtures, etc."""
 
         print(msg(self.id(), self.shortDescription()))
-            
 
     def tearDown(self):
         """return to pristine state"""
@@ -86,18 +86,26 @@ class QaTest(unittest.TestCase):
 
     def test_preconditions(self):
         """test preconditions"""
-        
+
         file_s = \
-            read_file('data/ozonesonde/20130227.ECC.6A.6A28027.UKMO-sample1.csv')
+            read_file(
+                'data/ozonesonde/20130227.ECC.6A.6A28027.UKMO-sample1.csv'
+            )
         qa_results = qa(file_s, rule_path=WOUDC_QA_RULES)
 
-        self.assertTrue('file1' in qa_results.keys(),
-                'file check')
-        self.assertTrue('1' in qa_results['file1'].keys(),
-                'test id check')
-        self.assertEquals(True, qa_results['file1']['1'][1]['precond_result'],
-                'precond result check')
-        
+        self.assertTrue(
+                        'file1' in qa_results.keys(),
+                        'file check'
+        )
+        self.assertTrue(
+                        '1' in qa_results['file1'].keys(),
+                        'test id check'
+        )
+        self.assertEquals(
+                            True,
+                            qa_results['file1']['1'][1]['precond_result'],
+                            'precond result check'
+        )
 
 
 # main
