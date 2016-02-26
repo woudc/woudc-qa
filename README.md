@@ -1,5 +1,5 @@
 [![Build Status](https://travis-ci.org/woudc/woudc-qa.png?branch=master)](https://travis-ci.org/woudc/woudc-qa)
-[![Build status](https://ci.appveyor.com/api/projects/status/02koln2pe4ap5kvd/branch/master?svg=true)](https://ci.appveyor.com/project/tomkralidis/woudc-qa/branch/master)
+[![Build status](https://ci.appveyor.com/api/projects/status/02koln2pe4ap5kvd/branch/master?svg=true)](https://ci.appveyor.com/project/tomkralidis/woudc-qa)
 [![Downloads this month on PyPI](https://img.shields.io/pypi/dm/woudc-qa.svg)](http://pypi.python.org/pypi/woudc-qa)
 [![Latest release](https://img.shields.io/pypi/v/woudc-qa.svg)](http://pypi.python.org/pypi/woudc-qa)
 [![License](https://img.shields.io/github/license/woudc/woudc-qa.svg)](https://github.com/woudc/woudc-qa)

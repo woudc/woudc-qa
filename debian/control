@@ -9,7 +9,7 @@ Vcs-Git: https://github.com/woudc/woudc-qa.git
 
 Package: woudc-qa
 Architecture: all
-Depends: ${misc:Depends}, ${python:Depends}, python-pkg-resources, python-pint, python-openpyxl, woudc-extcsv
+Depends: ${misc:Depends}, ${python:Depends}, python-pkg-resources, python-pint, woudc-extcsv
 Homepage: http://woudc.org
 Description: WMO WOUDC quality assessment library
  woudc-qa is a Python package for automatically quality assessing
