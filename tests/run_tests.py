@@ -50,7 +50,7 @@ from woudc_qa import qa
 __dirpath = os.path.dirname(os.path.realpath(__file__))
 
 # test qa definitions
-WOUDC_QA_RULES = os.path.join(__dirpath, 'woudc-qa-rules-test1.xlsx')
+WOUDC_QA_RULES = os.path.join(__dirpath, 'woudc-qa-rules-test1.csv')
 
 
 def msg(test_id, test_description):

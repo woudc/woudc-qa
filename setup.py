@@ -135,7 +135,7 @@ setup(
     maintainer_email=EMAIL,
     url=URL,
     packages=find_packages('.'),
-    package_data={'woudc_qa': ['woudc-qa-rules.xlsx']},
+    package_data={'woudc_qa': ['woudc-qa-rules.csv']},
     scripts=SCRIPTS,
     install_requires=INSTALL_REQUIRES,
     classifiers=[

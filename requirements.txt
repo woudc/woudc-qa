@@ -1,3 +1,2 @@
-openpyxl==2.3.3
 pint==0.6
 woudc-extcsv==0.1.2
