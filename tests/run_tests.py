@@ -88,220 +88,147 @@ class QaTest(unittest.TestCase):
         """test good/pass preconditions"""
 
         # ozonesonde
-        file_s = \
-            read_file(
-                'data/ozonesonde/20130227.ECC.6A.6A28027.UKMO-sample1.csv'
-            )
+        file_s = read_file(
+            'data/ozonesonde/20130227.ECC.6A.6A28027.UKMO-sample1.csv')
         qa_results = qa(file_s, rule_path=WOUDC_QA_RULES)
 
-        self.assertTrue(
-                        'file1' in qa_results.keys(),
-                        'file check'
-        )
-        self.assertTrue(
-                        '1' in qa_results['file1'].keys(),
-                        'test id check'
-        )
-        self.assertEquals(
-                        True,
-                        qa_results['file1']['1'][1]['precond_result'],
-                        'precond result check'
-        )
+        self.assertTrue('file1' in qa_results.keys(), 'file check')
+        self.assertTrue('1' in qa_results['file1'].keys(), 'test id check')
+        self.assertEquals(True, qa_results['file1']['1'][1]['precond_result'],
+                          'precond result check')
 
     def test_bad_preconditions(self):
         """test bad/fail precondition"""
 
         # totalozone
-        file_s = \
-            read_file(
-                'data/totalozone/19870501.Dobson.Beck.092.DMI-sample1.csv'
-            )
+        file_s = read_file(
+            'data/totalozone/19870501.Dobson.Beck.092.DMI-sample1.csv')
         qa_results = qa(file_s, rule_path=WOUDC_QA_RULES)
-        self.assertEquals(
-                        False,
-                        qa_results['file1']['35'][1]['precond_result'],
-                        'precond result check'
-        )
+        self.assertEquals(False,
+                          qa_results['file1']['35'][1]['precond_result'],
+                          'precond result check')
 
     def test_good_related_test(self):
         """test good/pass related test"""
 
         # ozonesonde
-        file_s = \
-            read_file(
-                'data/ozonesonde/20070505.ecc.2z.6674.uah.csv'
-            )
+        file_s = read_file('data/ozonesonde/20070505.ecc.2z.6674.uah.csv')
         qa_results = qa(file_s, rule_path=WOUDC_QA_RULES)
-        self.assertEquals(
-                        True,
-                        qa_results['file1']['40'][1]['related_test_result'],
-                        'related test result result check'
-        )
+        self.assertEquals(True,
+                          qa_results['file1']['40'][1]['related_test_result'],
+                          'related test result result check')
 
     def test_bad_related_test(self):
         """test bad related test"""
 
         # ozonesonde
-        file_s = \
-            read_file(
-                'data/ozonesonde/20070505.ecc.2z.6674.uah.csv'
-            )
+        file_s = read_file('data/ozonesonde/20070505.ecc.2z.6674.uah.csv')
         qa_results = qa(file_s, rule_path=WOUDC_QA_RULES)
-        self.assertEquals(
-                        False,
-                        qa_results['file1']['38'][1]['related_test_result'],
-                        'related test result check'
-        )
+        self.assertEquals(False,
+                          qa_results['file1']['38'][1]['related_test_result'],
+                          'related test result check')
 
     def test_good_related_test_profile(self):
         """test good/pass related test in profile"""
 
         # ozonesonde
-        file_s = \
-            read_file(
-                'data/ozonesonde/20130227.ECC.6A.6A28027.UKMO-sample1.csv'
-            )
+        file_s = read_file(
+            'data/ozonesonde/20130227.ECC.6A.6A28027.UKMO-sample1.csv')
         qa_results = qa(file_s, rule_path=WOUDC_QA_RULES)
-        self.assertEquals(
-                        True,
-                        qa_results['file1']['25P'][4]['related_test_result'],
-                        'related test result in profile check'
-        )
+        self.assertEquals(True,
+                          qa_results['file1']['25P'][4]['related_test_result'],
+                          'related test result in profile check')
 
     def test_bad_related_test_profile(self):
         """test bad related test in profile"""
 
         # ozonesonde
-        file_s = \
-            read_file(
-                'data/ozonesonde/20130227.ECC.6A.6A28027.UKMO-sample1.csv'
-            )
+        file_s = read_file(
+            'data/ozonesonde/20130227.ECC.6A.6A28027.UKMO-sample1.csv')
         qa_results = qa(file_s, rule_path=WOUDC_QA_RULES)
-        self.assertEquals(
-                        False,
-                        qa_results['file1']['25P'][7]['related_test_result'],
-                        'related test result in profile check'
-        )
+        self.assertEquals(False,
+                          qa_results['file1']['25P'][7]['related_test_result'],
+                          'related test result in profile check')
 
     def test_good_presence_check(self):
         """test good presence"""
 
         # ozonesonde
-        file_s = \
-            read_file(
-                'data/ozonesonde/20130227.ECC.6A.6A28027.UKMO-sample1.csv'
-            )
+        file_s = read_file(
+            'data/ozonesonde/20130227.ECC.6A.6A28027.UKMO-sample1.csv')
         qa_results = qa(file_s, rule_path=WOUDC_QA_RULES)
-        self.assertEquals(
-                        '100',
-                        qa_results['file1']['22P'][2]['result'],
-                        'presence check in profile'
-        )
+        self.assertEquals('100', qa_results['file1']['22P'][2]['result'],
+                          'presence check in profile')
 
     def test_bad_presence_check(self):
         """test good presence"""
 
         # totalozone
-        file_s = \
-            read_file(
-                'data/totalozone/19870501.Dobson.Beck.092.DMI-sample1.csv'
-            )
+        file_s = read_file(
+            'data/totalozone/19870501.Dobson.Beck.092.DMI-sample1.csv')
         qa_results = qa(file_s, rule_path=WOUDC_QA_RULES)
-        self.assertEquals(
-                        '-1',
-                        qa_results['file1']['41'][20]['result'],
-                        'presence check in profile'
-        )
+        self.assertEquals('-1', qa_results['file1']['41'][20]['result'],
+                          'presence check in profile')
 
     def test_good_presence_check2(self):
         """test good presence"""
 
         # totalozone
-        file_s = \
-            read_file(
-                'data/totalozone/19870501.Dobson.Beck.092.DMI-sample2.csv'
-            )
+        file_s = read_file(
+            'data/totalozone/19870501.Dobson.Beck.092.DMI-sample2.csv')
         qa_results = qa(file_s, rule_path=WOUDC_QA_RULES)
-        self.assertEquals(
-                        '100',
-                        qa_results['file1']['41'][20]['result'],
-                        'presence check in profile'
-        )
+        self.assertEquals('100', qa_results['file1']['41'][20]['result'],
+                          'presence check in profile')
 
     def test_good_range_check(self):
         """test good range check"""
 
         # ozonesonde
-        file_s = \
-            read_file(
-                'data/ozonesonde/20130227.ECC.6A.6A28027.UKMO-sample1.csv'
-            )
+        file_s = read_file(
+            'data/ozonesonde/20130227.ECC.6A.6A28027.UKMO-sample1.csv')
         qa_results = qa(file_s, rule_path=WOUDC_QA_RULES)
-        self.assertEquals(
-                        '100',
-                        qa_results['file1']['25P'][10]['result'],
-                        'range check in profile'
-        )
+        self.assertEquals('100', qa_results['file1']['25P'][10]['result'],
+                          'range check in profile')
 
     def test_bad_range_check(self):
         """test bad range check"""
 
         # ozonesonde
-        file_s = \
-            read_file(
-                'data/ozonesonde/20130227.ECC.6A.6A28027.UKMO-sample1.csv'
-            )
+        file_s = read_file(
+            'data/ozonesonde/20130227.ECC.6A.6A28027.UKMO-sample1.csv')
         qa_results = qa(file_s, rule_path=WOUDC_QA_RULES)
-        self.assertEquals(
-                        '0',
-                        qa_results['file1']['42'][5]['result'],
-                        'range check in profile'
-        )
+        self.assertEquals('0', qa_results['file1']['42'][5]['result'],
+                          'range check in profile')
 
     def test_bad_range_check2(self):
         """test bad range check"""
 
         # totalozone
-        file_s = \
-            read_file(
-                'data/totalozone/19870501.Dobson.Beck.092.DMI-sample1.csv'
-            )
+        file_s = read_file(
+            'data/totalozone/19870501.Dobson.Beck.092.DMI-sample1.csv')
         qa_results = qa(file_s, rule_path=WOUDC_QA_RULES)
-        self.assertEquals(
-                        None,
-                        qa_results['file1']['36'][1]['result'],
-                        'range check in profile'
-        )
+        self.assertEquals(None, qa_results['file1']['36'][1]['result'],
+                          'range check in profile')
 
     def test_good_step_check(self):
         """test good step check"""
 
         # ozonesonde
-        file_s = \
-            read_file(
-                'data/ozonesonde/20130227.ECC.6A.6A28027.UKMO-sample1.csv'
-            )
+        file_s = read_file(
+            'data/ozonesonde/20130227.ECC.6A.6A28027.UKMO-sample1.csv')
         qa_results = qa(file_s, rule_path=WOUDC_QA_RULES)
-        self.assertEquals(
-                        '100',
-                        qa_results['file1']['27'][1]['result'],
-                        'step check in profile'
-        )
+        self.assertEquals('100', qa_results['file1']['27'][1]['result'],
+                          'step check in profile')
 
     def test_bad_step_check(self):
         """test bad step check"""
 
         # ozonesonde
-        file_s = \
-            read_file(
-                'data/ozonesonde/20130227.ECC.6A.6A28027.UKMO-sample1.csv'
-            )
+        file_s = read_file(
+            'data/ozonesonde/20130227.ECC.6A.6A28027.UKMO-sample1.csv')
         qa_results = qa(file_s, rule_path=WOUDC_QA_RULES)
-        self.assertEquals(
-                        '0',
-                        qa_results['file1']['23P'][2]['result'],
-                        'step check in profile'
-        )
+        self.assertEquals('0', qa_results['file1']['23P'][2]['result'],
+                          'step check in profile')
 
 
 # main

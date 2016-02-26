@@ -1,0 +1,6 @@
+.coverage
+*.pyc
+build
+dist
+woudc_qa.egg-info
+MANIFEST
