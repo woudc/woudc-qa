@@ -45,9 +45,9 @@
 
 
 import os
+import csv
 import logging
 from collections import OrderedDict
-import openpyxl
 from woudc_extcsv import loads
 from woudc_qa.util import \
     get_extcsv_value
@@ -59,7 +59,7 @@ __version__ = '0.1.1'
 
 __dirpath = os.path.dirname(os.path.realpath(__file__))
 
-WOUDC_QA_RULES = os.path.join(__dirpath, 'woudc-qa-rules.xlsx')
+WOUDC_QA_RULES = os.path.join(__dirpath, 'woudc-qa-rules.csv')
 
 LOGGER = logging.getLogger(__name__)
 
@@ -270,7 +270,7 @@ class QualityChecker(object):
                     profile = False
                     if rule['profile'] == '1':
                         profile = True
-                    if rule['table_index'] == 'None':
+                    if rule['table_index'] == '':
                         rule['table_index'] = 1
                     # setup flag map
                     poss_results = rule['test_results'].split('|')
@@ -415,6 +415,7 @@ class QualityChecker(object):
                     row += 1
                     continue
                 if any([result is None, result is True]):
+                    # if result:
                     continue_testing = True
                 if continue_testing:
                     try:
@@ -707,94 +708,40 @@ class QualityChecker(object):
         Load qa rules, functions and flag definitions
         """
 
-        # load xlsx
+        # load csv
         try:
-            qa_defs_xl = \
-                openpyxl.load_workbook(self.rule_path, use_iterators=True)
+            qa_def_csv = open(self.rule_path, 'rb')
+            rows = csv.reader(qa_def_csv)
         except Exception, err:
-            msg = 'Unable to read qa definition xlsx. Due to: %s' % str(err)
+            msg = 'Unable to read qa definition csv. Due to: %s' % str(err)
             LOGGER.critical(msg)
             raise err
 
         # load qa rules
-        try:
-            qa_tests_ws = qa_defs_xl.get_sheet_by_name('qa tests')
-        except Exception, err:
-            msg = 'Unable to get workshet: qa tests. Due to: %s' % str(err)
-            LOGGER.critical(msg)
-            raise err
-        max_rows = qa_tests_ws.max_row + 1
-        max_cols = qa_tests_ws.max_column + 1
 
         header = []
-        try:
-            for i in range(1, max_rows):
-                dataset = None
-                rule = {}
-                for j in range(1, max_cols):
-                    val = str(qa_tests_ws.cell(row=i, column=j).value)
-                    if i == 1:  # header
-                        header.append(val)
+        i = 0
+        for row in rows:
+            dataset = None
+            rule = {}
+            j = 0
+            for val in row:
+                if i == 0:
+                    header.append(val)
+                else:
+                    if j == 0:  # dataset
+                        dataset = val
+                        if dataset not in self.qa_rules.keys():
+                            self.qa_rules[dataset] = []
                     else:
-                        if j == 1:  # dataset
-                            dataset = val
-                            if dataset not in self.qa_rules.keys():
-                                self.qa_rules[dataset] = []
-                        else:
-                            rule_tok = header[j-1]
-                            if rule_tok not in rule.keys():
-                                rule[rule_tok] = val
-                if len(rule) != 0:
-                    self.qa_rules[dataset].append(rule)
-        except Exception, err:
-            msg = 'Error while parsing qa tests tab: %s' % str(err)
-            LOGGER.error(msg)
-            raise err
+                        rule_tok = header[j]
+                        if rule_tok not in rule.keys():
+                            rule[rule_tok] = val
+                j += 1
+            if len(rule) != 0:
+                self.qa_rules[dataset].append(rule)
 
-        # load function defs
-        try:
-            func_ws = qa_defs_xl.get_sheet_by_name('function defs')
-        except Exception, err:
-            msg = 'Unable to get workshet: function defs. Due to: %s' \
-                % str(err)
-            LOGGER.critical(msg)
-            raise err
-        max_rows = func_ws.max_row + 1
-        max_cols = func_ws.max_column + 1
-        try:
-            for i in range(2, max_rows):
-                if func_ws.cell(row=i, column=1):
-                    func = str(func_ws.cell(row=i, column=1).value)
-                    func_def = str(func_ws.cell(row=i, column=2).value)
-                    self.qa_functions[func] = func_def
-        except Exception, err:
-            msg = 'Error while parsing function defs tab: %s' % str(err)
-            LOGGER.error(msg)
-            raise err
-
-        # load flag defs
-        try:
-            flag_ws = qa_defs_xl.get_sheet_by_name('flag defs')
-        except Exception, err:
-            msg = 'Unable to get workshet: qa flag defs. Due to: %s' % str(err)
-            LOGGER.critical(msg)
-            raise err
-        max_rows = flag_ws.max_row + 1
-        max_cols = flag_ws.max_column + 1
-        try:
-            for i in range(2, max_rows):
-                if flag_ws.cell(row=i, column=1):
-                    flag_val = flag_ws.cell(row=i, column=1).value
-                    flag_name = flag_ws.cell(row=i, column=2).value
-                    flag_desc = flag_ws.cell(row=i, column=3).value
-                    self.qa_flags[flag_val] = {
-                                                'flag_name': flag_name,
-                                                'flag_desc': flag_desc
-                    }
-        except Exception, err:
-            msg = 'Error while parsing function defs tab: %s' % str(err)
-            LOGGER.error(msg)
-            raise err
+            i += 1
 
     def check_related_test(self, rule, row):
         """
@@ -815,9 +762,9 @@ class QualityChecker(object):
             r_test_id = rule['related_test_id'].split(',')
             r_test_result = rule['related_test_result'].split(',')
             if any([
-                    r_test_id == ['None'],
+                    r_test_id == [''],
+                    r_test_result == [''],
                     len(r_test_id) == 0,
-                    r_test_result == ['None'],
                     len(r_test_result) == 0
                     ]):
                     return result
@@ -861,11 +808,8 @@ class QualityChecker(object):
             result.pop('agency')
         else:
             agency = rule['agency']
-            if any([
-                    agency == 'None',
-                    agency == ''
-                    ]):
-                    result.pop('agency')
+            if agency == '':
+                result.pop('agency')
             else:
                 try:
                     agency_f = \
@@ -887,11 +831,8 @@ class QualityChecker(object):
             result.pop('platform')
         else:
             platform = rule['platform']
-            if any([
-                    platform == '',
-                    platform == 'None'
-                    ]):
-                    result.pop('platform')
+            if platform == '':
+                result.pop('platform')
             else:
                 try:
                     p_type_f = \
@@ -912,11 +853,8 @@ class QualityChecker(object):
             result.pop('instrument_type')
         else:
             instrument_type = rule['instrument_type']
-            if any([
-                    instrument_type == '',
-                    instrument_type == 'None'
-                    ]):
-                    result.pop('instrument_type')
+            if instrument_type == '':
+                result.pop('instrument_type')
             else:
                 try:
                     i_type_f = \
@@ -934,11 +872,8 @@ class QualityChecker(object):
             result.pop('instrument_model')
         else:
             instrument_model = rule['instrument_model']
-            if any([
-                    instrument_model == '',
-                    instrument_model == 'None'
-                    ]):
-                    result.pop('instrument_model')
+            if instrument_model == '':
+                result.pop('instrument_model')
             else:
                 try:
                     i_model_f = \
@@ -956,11 +891,8 @@ class QualityChecker(object):
             result.pop('instrument_serial')
         else:
             instrument_serial_number = rule['instrument_serial_number']
-            if any([
-                    instrument_serial_number == '',
-                    instrument_serial_number == 'None'
-                    ]):
-                    result.pop('instrument_serial')
+            if instrument_serial_number == '':
+                result.pop('instrument_serial')
             else:
                 try:
                     i_num_f = \
@@ -979,10 +911,7 @@ class QualityChecker(object):
             result.pop('instrument_lat')
         else:
             instrument_latitude = rule['instrument_latitude']
-            if any([
-                    instrument_latitude == '',
-                    instrument_latitude == 'None'
-                    ]):
+            if instrument_latitude == '':
                     result.pop('instrument_lat')
             else:
                 try:
@@ -1009,10 +938,7 @@ class QualityChecker(object):
             result.pop('instrument_lon')
         else:
             instrument_longitude = rule['instrument_longitude']
-            if any([
-                    instrument_longitude == '',
-                    instrument_longitude == 'None'
-                    ]):
+            if instrument_longitude == '':
                     result.pop('instrument_lon')
             else:
                 try:
