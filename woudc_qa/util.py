@@ -53,14 +53,8 @@ from StringIO import StringIO
 LOGGER = logging.getLogger(__name__)
 
 
-def get_extcsv_value(
-                    extcsv,
-                    table,
-                    field,
-                    table_index=1,
-                    raw=False,
-                    payload=False
-                    ):
+def get_extcsv_value(extcsv, table, field, table_index=1, raw=False,
+                     payload=False):
     """
     get value or values from extcsv
 
@@ -83,7 +77,7 @@ def get_extcsv_value(
                 try:
                     value = extcsv.sections[table][field]
                     return value
-                except Exception, err:
+                except Exception as err:
                     msg = 'Unable to get value for table: %s, field: %s. \
                         Due to: %s.' % (table, field, str(err))
                     LOGGER.error(msg)
@@ -102,11 +96,11 @@ def get_extcsv_value(
                 if field in fields:
                     try:
                         value.append(row[fields.index(field)])
-                    except IndexError, err:
+                    except IndexError as err:
                         msg = 'Empty column for table: %s, field: %s.\
                         Putting in blank' % (table, field)
                         value.append('')
-                    except Exception, err:
+                    except Exception as err:
                         msg = 'Unable to get value for table: %s, field: %s.\
                         Due to: %s' % (table, field, str(err))
                         LOGGER.error(msg)
@@ -114,14 +108,8 @@ def get_extcsv_value(
         return value
 
 
-def set_extcsv_value(
-                    extcsv,
-                    table,
-                    field,
-                    value,
-                    table_index=1,
-                    mode='update'
-                    ):
+def set_extcsv_value(extcsv, table, field, value, table_index=1,
+                     mode='update'):
     """
     update extcsv with given value(s)
 
@@ -144,18 +132,13 @@ def set_extcsv_value(
     else:  # profile
         # update profile with new values
         try:
-            body = get_extcsv_value(
-                                    extcsv,
-                                    table,
-                                    field,
-                                    table_index,
-                                    True,
-                                    True
-                                    )
-        except Exception, err:
-            msg = 'Unable to get value for table: %s,\
-                table_index: %s, field: %s. Due to: %s' %\
-                    (table, table_index, field, str(err))
+            body = get_extcsv_value(extcsv, table, field, table_index, True,
+                                    True)
+        except Exception as err:
+            msg = 'Unable to get value for table: %s, ' \
+                  'table_index: %s, field: %s. Due to: %s' % (table,
+                                                              table_index,
+                                                              field, str(err))
             LOGGER.error(msg)
             raise err(msg)
 
@@ -188,7 +171,7 @@ def set_extcsv_value(
         for row in new_rows:
             try:
                 csv_writer.writerow(row)
-            except Exception, err:
+            except Exception as err:
                 msg = 'Unable to write row to payload. Due to: %s' % (str(err))
                 LOGGER.error(msg)
                 continue
@@ -224,7 +207,7 @@ def unit_converter(value, from_unit, to_unit):
     try:
         home = Q_(value, src)
         convert = str(home.to(dst)).split()[0]
-    except Exception, err:
+    except Exception as err:
         msg = 'Unable to convert unit from :%s to: %s. Due to: %s' %\
             (from_unit, to_unit, str(err))
         LOGGER.error(msg)

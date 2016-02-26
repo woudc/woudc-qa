@@ -1,12 +1,18 @@
+[![Build Status](https://travis-ci.org/woudc/woudc-qa.png?branch=master)](https://travis-ci.org/woudc/woudc-qa)
+[![Build status](https://ci.appveyor.com/api/projects/status/02koln2pe4ap5kvd/branch/master?svg=true)](https://ci.appveyor.com/project/tomkralidis/woudc-qa/branch/master)
+[![Downloads this month on PyPI](https://img.shields.io/pypi/dm/woudc-qa.svg)](http://pypi.python.org/pypi/woudc-qa)
+[![Latest release](https://img.shields.io/pypi/v/woudc-qa.svg)](http://pypi.python.org/pypi/woudc-qa)
+[![License](https://img.shields.io/github/license/woudc/woudc-qa.svg)](https://github.com/woudc/woudc-qa)
+
 # WOUDC Quality Assessment library
 
-Python package for automatically quality assessing WOUDC data based on defined rules.
+Python package for automatically quality assessing [WOUDC](http://woudc.org) data based on defined rules.
 
 ## Installation
 
 ### Requirements
 
-woudc-extcsv requires Python 2.7.
+woudc-qa requires Python 2.7.
 
 ### Dependencies
 

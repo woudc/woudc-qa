@@ -300,12 +300,8 @@ class QualityChecker(object):
                         result = 'NR'
                     # store result
                     try:
-                        self._set_test_result(
-                            rule['test_id'],
-                            rule,
-                            'precond_result',
-                            result
-                            )
+                        self._set_test_result(rule['test_id'], rule,
+                                              'precond_result', result)
                     except Exception, err:
                         msg = 'Unable to set precondition test result.\
                         Due to: %s' % str(err)
@@ -332,12 +328,9 @@ class QualityChecker(object):
                                 result = 'NR'
                             # store result
                             try:
-                                self._set_test_result(
-                                    rule['test_id'],
-                                    rule,
-                                    'related_test_result',
-                                    result
-                                    )
+                                self._set_test_result(rule['test_id'], rule,
+                                                      'related_test_result',
+                                                      result)
                             except Exception, err:
                                 msg = 'Unable to set related test result.\
                                 Due to: %s' % str(err)
@@ -375,13 +368,8 @@ class QualityChecker(object):
         function = rule['function']
         param_a = rule['function_parameter_a']
         value = \
-            get_extcsv_value(
-                            self.extcsv,
-                            table,
-                            field,
-                            table_index,
-                            payload=profile
-            )
+            get_extcsv_value(self.extcsv, table, field, table_index,
+                             payload=profile)
         if profile:
             # get related tests
             row = 0
@@ -391,7 +379,7 @@ class QualityChecker(object):
                 try:
                     # got to check row-1 and row
                     this_row_result = self.check_related_test(rule, row)
-                    next_row_result = self.check_related_test(rule, row+1)
+                    next_row_result = self.check_related_test(rule, row + 1)
                 except Exception, err:
                     msg = 'Unable to run test_id: %s.\
                         Due to: related test unable to run.' % rule['test_id']
@@ -422,18 +410,12 @@ class QualityChecker(object):
                         # determine type of step check
                         if function == 'TS_0':
                             t_result =\
-                                self._function_ts_0(
-                                                    value[row],
-                                                    value[row+1],
-                                                    param_a
-                                )
+                                self._function_ts_0(value[row], value[row + 1],
+                                                    param_a)
                         elif function == 'TS_2':
                             t_result =\
-                                self._function_ts_2(
-                                                    value[row],
-                                                    value[row+1],
-                                                    param_a
-                                )
+                                self._function_ts_2(value[row], value[row + 1],
+                                                    param_a)
                         else:
                             msg = 'Unrecognized step check function: %s.\
                             for test_id: %s' % (function, rule['test_id'])
@@ -447,21 +429,11 @@ class QualityChecker(object):
                         t_result = 'Error'
 
                     try:
-                        self._set_test_result(
-                            rule['test_id'],
-                            rule,
-                            'result',
-                            t_result,
-                            row + 1
-                            )
+                        self._set_test_result(rule['test_id'], rule, 'result',
+                                              t_result, row + 1)
                         if row == val_len - 2:
-                            self._set_test_result(
-                                rule['test_id'],
-                                rule,
-                                'result',
-                                t_result,
-                                row + 2
-                                )
+                            self._set_test_result(rule['test_id'], rule,
+                                                  'result', t_result, row + 2)
                     except Exception, err:
                         msg = 'Unable to set test result for test id: %s \
                         Due to: %s' % (rule['test_id'], str(err))
@@ -485,13 +457,8 @@ class QualityChecker(object):
         param_b = rule['function_parameter_b']
         # get value from extcsv
         value = \
-            get_extcsv_value(
-                            self.extcsv,
-                            table,
-                            field,
-                            table_index,
-                            payload=profile
-            )
+            get_extcsv_value(self.extcsv, table, field, table_index,
+                             payload=profile)
         if profile:
             # get related tests
             row = 1
@@ -506,13 +473,8 @@ class QualityChecker(object):
                     result = 'NR'
                 # store result
                 try:
-                    self._set_test_result(
-                        rule['test_id'],
-                        rule,
-                        'related_test_result',
-                        result,
-                        row
-                        )
+                    self._set_test_result(rule['test_id'], rule,
+                                          'related_test_result', result, row)
                 except Exception, err:
                     msg = 'Unable to set related test result.\
                     Due to: %s' % str(err)
@@ -544,13 +506,8 @@ class QualityChecker(object):
                         LOGGER.error(msg)
                         t_result = 'Error'
                     try:
-                        self._set_test_result(
-                            rule['test_id'],
-                            rule,
-                            'result',
-                            t_result,
-                            row
-                            )
+                        self._set_test_result(rule['test_id'], rule, 'result',
+                                              t_result, row)
                     except Exception, err:
                         msg = 'Unable to set test result for test id: %s \
                             Due to: %s' % (rule['test_id'], str(err))
@@ -575,18 +532,13 @@ class QualityChecker(object):
                 t_result = flag_map[t_result]
             except Exception, err:
                 msg = 'Unable to do range check for test_id: %s. Due to: %s' \
-                    % (rule['test_id'], str(err))
+                      % (rule['test_id'], str(err))
                 LOGGER.error(msg)
                 t_result = 'Error'
                 # continue
             try:
-                self._set_test_result(
-                    rule['test_id'],
-                    rule,
-                    'result',
-                    t_result,
-                    1
-                    )
+                self._set_test_result(rule['test_id'], rule, 'result',
+                                      t_result, 1)
             except Exception, err:
                 msg = 'Unable to set test result for test id: %s \
                 Due to: %s' % (rule['test_id'], str(err))
@@ -606,13 +558,8 @@ class QualityChecker(object):
         function = rule['function']
         # get value from extcsv
         value = \
-            get_extcsv_value(
-                            self.extcsv,
-                            table,
-                            field,
-                            table_index,
-                            payload=profile
-            )
+            get_extcsv_value(self.extcsv, table, field, table_index,
+                             payload=profile)
         if profile:
             # get related tests
             row = 1
@@ -627,13 +574,8 @@ class QualityChecker(object):
                     result = 'NR'
                 # store result
                 try:
-                    self._set_test_result(
-                        rule['test_id'],
-                        rule,
-                        'related_test_result',
-                        result,
-                        row
-                        )
+                    self._set_test_result(rule['test_id'], rule,
+                                          'related_test_result', result, row)
                 except Exception, err:
                     msg = 'Unable to set related test result.\
                     Due to: %s' % str(err)
@@ -659,13 +601,8 @@ class QualityChecker(object):
                         LOGGER.error(msg)
                         t_result = 'Error'
                     try:
-                        self._set_test_result(
-                            rule['test_id'],
-                            rule,
-                            'result',
-                            t_result,
-                            row
-                            )
+                        self._set_test_result(rule['test_id'], rule, 'result',
+                                              t_result, row)
                     except Exception, err:
                         msg = 'Unable to set test result for test id: %s \
                         Due to: %s' % (rule['test_id'], str(err))
@@ -689,13 +626,8 @@ class QualityChecker(object):
                 LOGGER.error(msg)
                 t_result = 'Error'
             try:
-                self._set_test_result(
-                    rule['test_id'],
-                    rule,
-                    'result',
-                    t_result,
-                    1
-                    )
+                self._set_test_result(rule['test_id'], rule, 'result',
+                                      t_result, 1)
             except Exception, err:
                 msg = 'Unable to set test result for test id: %s \
                 Due to: %s' % (rule['test_id'], str(err))
@@ -741,7 +673,7 @@ class QualityChecker(object):
                             if dataset not in self.qa_rules.keys():
                                 self.qa_rules[dataset] = []
                         else:
-                            rule_tok = header[j-1]
+                            rule_tok = header[j - 1]
                             if rule_tok not in rule.keys():
                                 rule[rule_tok] = val
                 if len(rule) != 0:
@@ -788,8 +720,8 @@ class QualityChecker(object):
                     flag_name = flag_ws.cell(row=i, column=2).value
                     flag_desc = flag_ws.cell(row=i, column=3).value
                     self.qa_flags[flag_val] = {
-                                                'flag_name': flag_name,
-                                                'flag_desc': flag_desc
+                        'flag_name': flag_name,
+                        'flag_desc': flag_desc
                     }
         except Exception, err:
             msg = 'Error while parsing function defs tab: %s' % str(err)
@@ -805,22 +737,16 @@ class QualityChecker(object):
         """
 
         result = None
-        if all([
-                'related_test_id' not in rule.keys(),
-                'related_test_status' not in rule.keys()
-                ]):
-                return result
+        if all(['related_test_id' not in rule.keys(),
+                'related_test_status' not in rule.keys()]):
+            return result
         else:
             # retrieve related test result
             r_test_id = rule['related_test_id'].split(',')
             r_test_result = rule['related_test_result'].split(',')
-            if any([
-                    r_test_id == ['None'],
-                    len(r_test_id) == 0,
-                    r_test_result == ['None'],
-                    len(r_test_result) == 0
-                    ]):
-                    return result
+            if any([r_test_id == ['None'], len(r_test_id) == 0,
+                    r_test_result == ['None'], len(r_test_result) == 0]):
+                return result
             try:
                 result = None
                 for rtid in r_test_id:
@@ -861,19 +787,13 @@ class QualityChecker(object):
             result.pop('agency')
         else:
             agency = rule['agency']
-            if any([
-                    agency == 'None',
-                    agency == ''
-                    ]):
-                    result.pop('agency')
+            if any([agency == 'None', agency == '']):
+                result.pop('agency')
             else:
                 try:
                     agency_f = \
-                        get_extcsv_value(
-                                        self.extcsv,
-                                        'DATA_GENERATION',
-                                        'Agency'
-                        )
+                        get_extcsv_value(self.extcsv, 'DATA_GENERATION',
+                                         'Agency')
                 except Exception, err:
                     msg = str(err)
                     LOGGER.error(msg)
@@ -887,11 +807,8 @@ class QualityChecker(object):
             result.pop('platform')
         else:
             platform = rule['platform']
-            if any([
-                    platform == '',
-                    platform == 'None'
-                    ]):
-                    result.pop('platform')
+            if any([platform == '', platform == 'None']):
+                result.pop('platform')
             else:
                 try:
                     p_type_f = \
@@ -912,11 +829,8 @@ class QualityChecker(object):
             result.pop('instrument_type')
         else:
             instrument_type = rule['instrument_type']
-            if any([
-                    instrument_type == '',
-                    instrument_type == 'None'
-                    ]):
-                    result.pop('instrument_type')
+            if any([instrument_type == '', instrument_type == 'None']):
+                result.pop('instrument_type')
             else:
                 try:
                     i_type_f = \
@@ -934,11 +848,8 @@ class QualityChecker(object):
             result.pop('instrument_model')
         else:
             instrument_model = rule['instrument_model']
-            if any([
-                    instrument_model == '',
-                    instrument_model == 'None'
-                    ]):
-                    result.pop('instrument_model')
+            if any([instrument_model == '', instrument_model == 'None']):
+                result.pop('instrument_model')
             else:
                 try:
                     i_model_f = \
@@ -956,11 +867,9 @@ class QualityChecker(object):
             result.pop('instrument_serial')
         else:
             instrument_serial_number = rule['instrument_serial_number']
-            if any([
-                    instrument_serial_number == '',
-                    instrument_serial_number == 'None'
-                    ]):
-                    result.pop('instrument_serial')
+            if any([instrument_serial_number == '',
+                    instrument_serial_number == 'None']):
+                result.pop('instrument_serial')
             else:
                 try:
                     i_num_f = \
@@ -979,11 +888,8 @@ class QualityChecker(object):
             result.pop('instrument_lat')
         else:
             instrument_latitude = rule['instrument_latitude']
-            if any([
-                    instrument_latitude == '',
-                    instrument_latitude == 'None'
-                    ]):
-                    result.pop('instrument_lat')
+            if any([instrument_latitude == '', instrument_latitude == 'None']):
+                result.pop('instrument_lat')
             else:
                 try:
                     lat_f = \
@@ -1009,11 +915,9 @@ class QualityChecker(object):
             result.pop('instrument_lon')
         else:
             instrument_longitude = rule['instrument_longitude']
-            if any([
-                    instrument_longitude == '',
-                    instrument_longitude == 'None'
-                    ]):
-                    result.pop('instrument_lon')
+            if any([instrument_longitude == '',
+                    instrument_longitude == 'None']):
+                result.pop('instrument_lon')
             else:
                 try:
                     lon_f = \
@@ -1062,9 +966,8 @@ class QualityChecker(object):
             else:
                 return None
         except Exception, err:
-            msg = 'Unable to get related test result for test_id: %s,\
-                row: %s. Due to: %s' % \
-                    (test_id, row, str(err))
+            msg = 'Unable to get related test result for test_id: %s, \
+                   row: %s. Due to: %s' % (test_id, row, str(err))
             LOGGER.error(msg)
             raise err
 
@@ -1125,11 +1028,8 @@ class QualityChecker(object):
         checks value is non empty
         """
 
-        if all([
-                value is not None,
-                value != ''
-                ]):
-                return True
+        if all([value is not None, value != '']):
+            return True
         else:
             return False
 

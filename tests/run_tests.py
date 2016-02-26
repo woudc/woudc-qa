@@ -93,19 +93,10 @@ class QaTest(unittest.TestCase):
             )
         qa_results = qa(file_s, rule_path=WOUDC_QA_RULES)
 
-        self.assertTrue(
-                        'file1' in qa_results.keys(),
-                        'file check'
-        )
-        self.assertTrue(
-                        '1' in qa_results['file1'].keys(),
-                        'test id check'
-        )
-        self.assertEquals(
-                            True,
-                            qa_results['file1']['1'][1]['precond_result'],
-                            'precond result check'
-        )
+        self.assertTrue('file1' in qa_results.keys(), 'file check')
+        self.assertTrue('1' in qa_results['file1'].keys(), 'test id check')
+        self.assertEquals(True, qa_results['file1']['1'][1]['precond_result'],
+                          'precond result check')
 
 
 # main
