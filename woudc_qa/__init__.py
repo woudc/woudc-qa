@@ -1227,6 +1227,15 @@ class QualityChecker(object):
                     return rule
 
 
+class WOUDCQaExecutionError(Exception):
+    """WOUDC quality assessment execution error"""
+
+    def __init__(self, message, errors):
+        """provide an error message and error stack"""
+        super(WOUDCQaExecutionError, self).__init__(message)
+        self.errors = errors
+
+
 def qa(file_content, file_path=None, rule_path=None):
     """
     Parse incoming file content, invoke dataset handlers,
@@ -1242,6 +1251,7 @@ def qa(file_content, file_path=None, rule_path=None):
     except Exception, err:
         msg = 'Unable to parse file. Due to: %s' % str(err)
         LOGGER.error(msg)
+        raise err
 
     # figue our dataset
     dataset = get_extcsv_value(
