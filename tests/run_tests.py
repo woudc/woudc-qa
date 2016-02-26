@@ -175,7 +175,7 @@ class QaTest(unittest.TestCase):
 
         # totalozone
         file_s = read_file(
-            'data/totalozone/19870501.Dobson.Beck.092.DMI-sample2.csv')
+            'data/totalozone/19870501.Dobson.Beck.092.DMI-sample1.csv')
         qa_results = qa(file_s, rule_path=WOUDC_QA_RULES)
         self.assertEquals('100', qa_results['file1']['41'][20]['result'],
                           'presence check in profile')
