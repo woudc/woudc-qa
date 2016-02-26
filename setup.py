@@ -45,7 +45,9 @@
 
 import os
 from distutils.core import setup, Command
-import woudc_qa
+
+with open('VERSION.txt') as ff:
+    VERSION = ff.read().strip()
 
 KEYWORDS = [
     'woudc',
@@ -65,6 +67,9 @@ try:
 except(IOError, ImportError):
     with open('README.md') as f:
         LONG_DESCRIPTION = f.read()
+
+with open('requirements.txt') as ff:
+    INSTALL_REQUIRES = [line.strip() for line in ff]
 
 CONTACT = 'Meteorological Service of Canada'
 
@@ -118,8 +123,8 @@ def find_packages(path, base=''):
 
 setup(
     name='woudc-qa',
-    version=woudc_qa.__version__,
-    description=DESCRIPTION.strip(),
+    version=VERSION,
+    description=DESCRIPTION,
     long_description=LONG_DESCRIPTION,
     license='MIT',
     platforms='all',
@@ -132,6 +137,7 @@ setup(
     packages=find_packages('.'),
     package_data={'woudc_qa': ['woudc-qa-rules.xlsx']},
     scripts=SCRIPTS,
+    install_requires=INSTALL_REQUIRES,
     classifiers=[
         'Development Status :: 4 - Beta',
         'Environment :: Console',

@@ -1,4 +1,4 @@
-# WOUDC Automatic Quality Assessment library
+# WOUDC Quality Assessment library
 
 Python package for automatically quality assessing WOUDC data based on defined rules.
 
@@ -51,15 +51,15 @@ virtualenv foo
 cd foo
 . bin/activate
 # fork master
-http://gitlab.ssc.etg.gc.ca/woudc/woudc-qa
+# fork http://github.com/woudc/woudc-qa on GitHub
 # clone your fork to create a branch
-git clone https://gitlab.ssc.etg.gc.ca/{your Gitlab username}/woudc-qa.git
+git clone https://github.com/{your GitHub username}/woudc-qa.git
 cd woudc-qa
 # install dev packages
 pip install -r requirements.txt
 python setup.py install
 # create upstream remote
-git remote add upstream https://gitlab.ssc.etg.gc.ca/woudc/woudc-qa.git
+git remote add upstream https://github.com/woudc/woudc-qa.git
 git pull upstream master
 git branch my-cool-feature
 git checkout my-cool-feature
@@ -102,7 +102,7 @@ find -type f -name "*.py" | xargs flake8
 ## Issues
 
 All bugs, enhancements and issues are managed on
-[GitHub](http://gitlab.ssc.etg.gc.ca/woudc/woudc-qa/issues).
+[GitHub](https://github.com/woudc/woudc-qa/issues).
 
 ## History
 
