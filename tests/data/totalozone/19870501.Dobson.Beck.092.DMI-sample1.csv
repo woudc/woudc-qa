@@ -31,7 +31,7 @@ UTCOffset,Date,Time
 Date,WLCode,ObsCode,ColumnO3,StdDevO3,UTC_Begin,UTC_End,UTC_Mean,nObs,mMu,ColumnSO2
 1987-05-01,0,4,365.4,,,,11,,,
 1987-05-02,0,4,349.8,,,,12,,,
-1987-05-03,0,4,347.8,,,,12,,,
+1987-05-03,0,4,501,,,,12,,,
 1987-05-04,0,4,379.0,,,,13,,,
 1987-05-05,0,2,355.6,,,,13,,,
 1987-05-06,0,2,334.2,,,,13,,,
@@ -67,4 +67,4 @@ UTCOffset,Date,Time
 
 #MONTHLY
 Date,ColumnO3,StdDevO3,Npts
-1987-05-01,397,46,28
+1987-05-01,501,46,28
