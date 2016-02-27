@@ -116,8 +116,8 @@ class QaTest(unittest.TestCase):
         file_s = read_file('data/ozonesonde/20070505.ecc.2z.6674.uah.csv')
         qa_results = qa(file_s, rule_path=WOUDC_QA_RULES)
         self.assertEqual(True,
-                          qa_results['file1']['40'][1]['related_test_result'],
-                          'related test result result check')
+                         qa_results['file1']['40'][1]['related_test_result'],
+                         'related test result result check')
 
     def test_bad_related_test(self):
         """test bad related test"""
@@ -156,7 +156,7 @@ class QaTest(unittest.TestCase):
             'data/ozonesonde/20130227.ECC.6A.6A28027.UKMO-sample1.csv')
         qa_results = qa(file_s, rule_path=WOUDC_QA_RULES)
         self.assertEqual('100', qa_results['file1']['22P'][2]['result'],
-                          'presence check in profile')
+                         'presence check in profile')
 
     def test_bad_presence_check(self):
         """test good presence"""
@@ -166,7 +166,7 @@ class QaTest(unittest.TestCase):
             'data/totalozone/19870501.Dobson.Beck.092.DMI-sample1.csv')
         qa_results = qa(file_s, rule_path=WOUDC_QA_RULES)
         self.assertEqual('-1', qa_results['file1']['41'][20]['result'],
-                          'presence check in profile')
+                         'presence check in profile')
 
     def test_good_presence_check2(self):
         """test good presence"""
@@ -176,7 +176,7 @@ class QaTest(unittest.TestCase):
             'data/totalozone/19870501.Dobson.Beck.092.DMI-sample2.csv')
         qa_results = qa(file_s, rule_path=WOUDC_QA_RULES)
         self.assertEqual('100', qa_results['file1']['41'][20]['result'],
-                          'presence check in profile')
+                         'presence check in profile')
 
     def test_good_range_check(self):
         """test good range check"""
@@ -186,7 +186,7 @@ class QaTest(unittest.TestCase):
             'data/ozonesonde/20130227.ECC.6A.6A28027.UKMO-sample1.csv')
         qa_results = qa(file_s, rule_path=WOUDC_QA_RULES)
         self.assertEqual('100', qa_results['file1']['25P'][10]['result'],
-                          'range check in profile')
+                         'range check in profile')
 
     def test_bad_range_check(self):
         """test bad range check"""
@@ -196,7 +196,7 @@ class QaTest(unittest.TestCase):
             'data/ozonesonde/20130227.ECC.6A.6A28027.UKMO-sample1.csv')
         qa_results = qa(file_s, rule_path=WOUDC_QA_RULES)
         self.assertEqual('0', qa_results['file1']['42'][5]['result'],
-                          'range check in profile')
+                         'range check in profile')
 
     def test_bad_range_check2(self):
         """test bad range check"""
@@ -216,7 +216,7 @@ class QaTest(unittest.TestCase):
             'data/ozonesonde/20130227.ECC.6A.6A28027.UKMO-sample1.csv')
         qa_results = qa(file_s, rule_path=WOUDC_QA_RULES)
         self.assertEqual('100', qa_results['file1']['27'][1]['result'],
-                          'step check in profile')
+                         'step check in profile')
 
     def test_bad_step_check(self):
         """test bad step check"""
@@ -226,7 +226,7 @@ class QaTest(unittest.TestCase):
             'data/ozonesonde/20130227.ECC.6A.6A28027.UKMO-sample1.csv')
         qa_results = qa(file_s, rule_path=WOUDC_QA_RULES)
         self.assertEqual('0', qa_results['file1']['23P'][2]['result'],
-                          'step check in profile')
+                         'step check in profile')
 
 
 # main
