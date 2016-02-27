@@ -16,7 +16,7 @@ woudc-qa requires Python 2.7.
 
 ### Dependencies
 
-None.
+See `requirements.txt`.
 
 ### Installing the Package
 
