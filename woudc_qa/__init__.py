@@ -1158,8 +1158,8 @@ class WOUDCQaExecutionError(Exception):
     pass
 
 
-class WOUDCQaNoImplementedError(Exception):
-    """No Qa implemeted for this dataset"""
+class WOUDCQaNotImplementedError(Exception):
+    """No Qa implemented for this dataset"""
     pass
 
 
@@ -1209,10 +1209,9 @@ def qa(file_content, file_path=None, rule_path=None):
     except AttributeError as err:
         msg = 'No Qa and/or dataset handler defined for dataset: %s' % dataset
         LOGGER.critical(msg)
-        raise WOUDCQaNoImplementedError(msg)
+        raise WOUDCQaNotImplementedError(msg)
     except Exception as err:
         msg = 'Unable to run Qa. Due to: %s' % str(err)
-        err.message = msg
         LOGGER.critical(msg)
         raise WOUDCQaExecutionError(msg)
 
