@@ -1,0 +1,16 @@
+Source: woudc-qa
+Section: python
+Priority: optional
+Maintainer: WOUDC <ec.woudc.ec@canada.ca>
+Build-Depends: debhelper (>= 9), python, python-setuptools
+Standards-Version: 3.9.5
+X-Python-Version: >= 2.7
+Vcs-Git: https://github.com/woudc/woudc-qa.git
+
+Package: woudc-qa
+Architecture: all
+Depends: ${misc:Depends}, ${python:Depends}, python-pkg-resources, python-pint, woudc-extcsv
+Homepage: http://woudc.org
+Description: WMO WOUDC quality assessment library
+ woudc-qa is a Python package for automatically quality assessing
+ WOUDC Extended CSV data based on defined rules.
