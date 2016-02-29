@@ -46,11 +46,7 @@
 # Dataset handlers
 
 import logging
-from woudc_qa.util import \
-    get_extcsv_value, \
-    set_extcsv_value, \
-    unit_converter
-
+from woudc_qa.util import get_extcsv_value, set_extcsv_value, unit_converter
 
 __version__ = '0.1.1'
 
@@ -105,7 +101,7 @@ class OzoneSondeHandler(object):
         try:
             PumpRate = \
                 get_extcsv_value(self.extcsv, 'AUXILIARY_DATA', 'PumpRate')
-        except Exception, err:
+        except Exception as err:
             msg = 'Unable to get AUXILIARY_DATA.PumpRate value. Due to: %s'\
                 % str(err)
             LOGGER.error(msg)
@@ -114,7 +110,7 @@ class OzoneSondeHandler(object):
         try:
             PumpRate_f = float(PumpRate)
             PumpRate_f_uc = PumpRate_f / 100
-        except Exception, err:
+        except Exception as err:
             msg = 'Invalid float: %s' % PumpRate
             LOGGER.error(msg)
             raise err(msg)
@@ -128,7 +124,7 @@ class OzoneSondeHandler(object):
                         'PumpRate',
                         PumpRate_f_uc
                     )
-            except Exception, err:
+            except Exception as err:
                 msg = 'Unable to set value for \
                 AUXILIARY_DATA.PumpRate. Due to: %s' % str(err)
                 LOGGER.error(msg)
@@ -148,7 +144,7 @@ class OzoneSondeHandler(object):
                     'PREFLIGHT_SUMMARY',
                     'OzoneSondeResponseTime'
                 )
-        except Exception, err:
+        except Exception as err:
             msg = \
                 'Unable to get PREFLIGHT_SUMMARY.OzoneSondeResponseTime \
                 value. Due to: %s' % str(err)
@@ -158,7 +154,7 @@ class OzoneSondeHandler(object):
         try:
             OzoneSondeResponseTime_f = float(OzoneSondeResponseTime)
             OzoneSondeResponseTime_f_uc = OzoneSondeResponseTime_f * 60
-        except Exception, err:
+        except Exception as err:
             msg = 'Invalid float: %s' % OzoneSondeResponseTime
             LOGGER.error(msg)
             raise err(msg)
@@ -172,7 +168,7 @@ class OzoneSondeHandler(object):
                         'OzoneSondeResponseTime',
                         OzoneSondeResponseTime_f_uc
                     )
-            except Exception, err:
+            except Exception as err:
                 msg = 'Unable to set value for \
                     PREFLIGHT_SUMMARY.OzoneSondeResponseTime. Due to: %s' \
                     % str(err)
@@ -189,7 +185,7 @@ class OzoneSondeHandler(object):
         try:
             value = \
                 get_extcsv_value(self.extcsv, 'TABLE', 'FIeld')
-        except Exception, err:
+        except Exception as err:
             msg = 'Unable to get TABLE.Field \
             value. Due to: %s' % str(err)
             LOGGER.error(msg)
@@ -198,7 +194,7 @@ class OzoneSondeHandler(object):
         try:
             pump_temp_f = float(value)
             pump_temp_f_uc = unit_converter(pump_temp_f, 'degC', 'kelvin')
-        except Exception, err:
+        except Exception as err:
             msg = 'Invalid float: %s' % value
             LOGGER.error(msg)
             raise err(msg)
@@ -212,7 +208,7 @@ class OzoneSondeHandler(object):
                         'Field',
                         pump_temp_f_uc
                     )
-            except Exception, err:
+            except Exception as err:
                 msg = 'Unable to set value for \
                 TABLE.Field. Due to: %s' % str(err)
                 LOGGER.error(msg)
@@ -232,7 +228,7 @@ class OzoneSondeHandler(object):
                 'O3PartialPressure',
                 payload=True
             )
-        except Exception, err:
+        except Exception as err:
             msg = 'Unable to get PROFILE.O3PartialPressure. Due to: %s' %\
                 str(err)
             LOGGER.error(msg)
@@ -245,7 +241,7 @@ class OzoneSondeHandler(object):
                 'Pressure',
                 payload=True
             )
-        except Exception, err:
+        except Exception as err:
             msg = 'Unable to get PROFILE.Pressure. Due to: %s' %\
                 str(err)
             LOGGER.error(msg)
@@ -256,21 +252,21 @@ class OzoneSondeHandler(object):
         for p in pressure:
             try:
                 p_f = float(p)
-            except Exception, err:
+            except Exception as err:
                 msg = 'Unable to float pressure: %s. Due to: %s' %\
                     (p, str(err))
                 LOGGER.error(msg)
                 continue
             try:
                 ppO3_f = float(ppO3[i])
-            except Exception, err:
+            except Exception as err:
                 msg = 'Unable to float ppO3: %s. Due to: %s' %\
                     (ppO3[i], str(err))
                 LOGGER.error(msg)
                 continue
             try:
                 vmr = (ppO3_f * 10) / p_f
-            except Exception, err:
+            except Exception as err:
                 msg = 'Unable to calculate vmr with input, ppO3: %s,\
                     pressure: %s. Due to: %s.' % (ppO3_f, p_f, str(err))
                 LOGGER.error(msg)
