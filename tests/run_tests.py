@@ -45,7 +45,7 @@
 
 import os
 import unittest
-from woudc_qa import qa
+from woudc_qa import qa, WOUDCQaNotImplementedError
 
 __dirpath = os.path.dirname(os.path.realpath(__file__))
 
@@ -228,6 +228,16 @@ class QaTest(unittest.TestCase):
         self.assertEqual('0', qa_results['file1']['23P'][2]['result'],
                          'step check in profile')
 
+    def test_non_supported_dataset(self):
+        """try a non supported dataset"""
+
+        file_s = \
+            read_file(
+                'data/lidar/19930208.dial.lotard.001.crestech.csv'
+            )
+
+        with self.assertRaises(WOUDCQaNotImplementedError):
+            qa(file_s, rule_path=WOUDC_QA_RULES)
 
 # main
 if __name__ == '__main__':
