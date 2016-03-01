@@ -1069,11 +1069,12 @@ class QualityChecker(object):
 
 class WOUDCQaExecutionError(Exception):
     """WOUDC quality assessment execution error"""
+    pass
 
-    def __init__(self, message, errors):
-        """provide an error message and error stack"""
-        super(WOUDCQaExecutionError, self).__init__(message)
-        self.errors = errors
+
+class WOUDCQaNotImplementedError(Exception):
+    """No Qa implemented for this dataset"""
+    pass
 
 
 def qa(file_content, file_path=None, rule_path=None):
@@ -1119,10 +1120,14 @@ def qa(file_content, file_path=None, rule_path=None):
             file_path,
             rule_path
         )
+    except AttributeError as err:
+        msg = 'No Qa and/or dataset handler defined for dataset: %s' % dataset
+        LOGGER.critical(msg)
+        raise WOUDCQaNotImplementedError(msg)
     except Exception as err:
         msg = 'Unable to run Qa. Due to: %s' % str(err)
         LOGGER.critical(msg)
-        raise err
+        raise WOUDCQaExecutionError(msg)
 
     return qa_checker.qa_results
 
