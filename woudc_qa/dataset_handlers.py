@@ -48,8 +48,6 @@
 import logging
 from woudc_qa.util import get_extcsv_value, set_extcsv_value, unit_converter
 
-__version__ = '0.1.1'
-
 LOGGER = logging.getLogger(__name__)
 
 
