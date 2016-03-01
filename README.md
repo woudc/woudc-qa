@@ -72,9 +72,10 @@ qa_results = qa(file_s)
 # 'related_test_result' is a aggregated result of all related tests to this test
 # 'precond' is the aggregated result of any precondition checks
 #
+# from collections import OrderedDict
 # test_result = qa_result[<filename>][<test_id>]
 # iterate over test results by row:
-# for row, result in test_result:
+# for row, result in test_result.iteritems():
 #    print row, result
 # ge result of assessment at a specific row
 # row_result = qa_results[<filename>][<test_id>][<row number>]['result']
