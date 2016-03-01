@@ -47,7 +47,6 @@
 
 import logging
 import csv
-from pint import UnitRegistry
 from StringIO import StringIO
 
 LOGGER = logging.getLogger(__name__)
@@ -180,37 +179,3 @@ def set_extcsv_value(extcsv, table, field, value, table_index=1,
         set_extcsv_value(extcsv, table, '_raw', value)
 
     return extcsv
-
-
-def unit_converter(value, from_unit, to_unit):
-    """
-    stub for using Pint to handle units and conversions
-
-    :param from_unit: from unit
-    :param to_unit: to unit
-    :param value: value to be converted
-    :returns: converted value in to unit
-    """
-    # define new units in registry
-    # TODO
-    ureg = UnitRegistry()
-    # convert
-    Q_ = ureg.Quantity
-    src = None
-    dst = None
-    # lookup the registry for the unit def
-    if from_unit == 'degC':
-        src = Q_.degC
-    if to_unit == 'kelvin':
-        dst = Q_.kelvin
-
-    try:
-        home = Q_(value, src)
-        convert = str(home.to(dst)).split()[0]
-    except Exception as err:
-        msg = 'Unable to convert unit from :%s to: %s. Due to: %s' %\
-            (from_unit, to_unit, str(err))
-        LOGGER.error(msg)
-        raise err(msg)
-
-    return convert
