@@ -44,6 +44,32 @@ optional arguments:
 from woudc_qa import qa
 file_s = open(<path to your extended CSV file.>).read()
 qa_results = qa(file_s)
+# qa_results is a dictionary as such:
+# qa_results: {
+#     filename: {
+#        test_id: {
+#            row : {
+#                result: result of this test, pass/fail/None/NR,
+#                table: table name,
+#                table_index: table_index,
+#                element: element name,
+#                related_test_id: test_id,
+#                related_test_result: related tests result, pass/fail/None/NR
+#                precond : precondition result: pass/fail/None/NR
+#            }
+#        }
+#    }
+# }
+
+# test_result = qa_result[<filename>][<test_id>]
+# for test_id, result in test_result:
+#    print test_id, result
+# result of assessment at a specific row
+# row_result = qa_results[<filename>][<test_id>][<row number>]['result']
+# where   <filename> is the name of the file, default it to 'file1'
+#         <test_id> is the test identifier from the test definition
+#         <row number> is the row number of the element under assessmet. Always 1 for non profile/payload element
+#         'result', is the result of the assessment for the element at the indicated row for the given test
 ```
 
 
