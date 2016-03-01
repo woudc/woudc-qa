@@ -1,3 +1,9 @@
+woudc-qa (0.1.2) unstable; urgency=low
+
+  * Remove pint dependency
+
+ -- WOUDC <ec.woudc.ec@canada.ca>  Tue, 01 Mar 2016 14:38:40 -0500
+
 woudc-qa (0.1.1) unstable; urgency=low
 
   * exception handling, configuration updates
