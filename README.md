@@ -77,7 +77,7 @@ qa_results = qa(file_s)
 # iterate over test results by row:
 # for row, result in test_result.iteritems():
 #    print row, result
-# ge result of assessment at a specific row
+# get result of assessment at a specific row
 # row_result = qa_results[<filename>][<test_id>][<row number>]['result']
 
 ```
