@@ -60,16 +60,25 @@ qa_results = qa(file_s)
 #        }
 #    }
 # }
-
+# where,
+# 'filename' is the name of the file, default it to 'file1'
+# 'test_id' is the test identifier from the test definition
+# 'row' is the row number of the element under assessmet. Always 1 for non profile/payload element
+# 'result', is the result of the assessment for the element at the indicated row for the given test
+# 'table' is the name of the table where the element under assessment is found
+# 'table_index' is the index of the above table. Default to 1, index will be incremented by 1 to handle multicipity
+# 'element' is the element under assessment
+# 'related_test_id' is a listing of any related test to this test
+# 'related_test_result' is a aggregated result of all related tests to this test
+# 'precond' is the aggregated result of any precondition checks
+#
 # test_result = qa_result[<filename>][<test_id>]
-# for test_id, result in test_result:
-#    print test_id, result
-# result of assessment at a specific row
+# iterate over test results by row:
+# for row, result in test_result:
+#    print row, result
+# ge result of assessment at a specific row
 # row_result = qa_results[<filename>][<test_id>][<row number>]['result']
-# where   <filename> is the name of the file, default it to 'file1'
-#         <test_id> is the test identifier from the test definition
-#         <row number> is the row number of the element under assessmet. Always 1 for non profile/payload element
-#         'result', is the result of the assessment for the element at the indicated row for the given test
+
 ```
 
 
