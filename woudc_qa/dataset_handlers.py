@@ -46,7 +46,7 @@
 # Dataset handlers
 
 import logging
-from woudc_qa.util import get_extcsv_value, set_extcsv_value, unit_converter
+from woudc_qa.util import get_extcsv_value, set_extcsv_value
 
 __version__ = '0.1.1'
 
@@ -172,45 +172,6 @@ class OzoneSondeHandler(object):
                 msg = 'Unable to set value for \
                     PREFLIGHT_SUMMARY.OzoneSondeResponseTime. Due to: %s' \
                     % str(err)
-                LOGGER.error(msg)
-                raise err(msg)
-
-    def pump_temperature_uc(self):
-        """
-        unit conversion for pump temperature
-        degC --> Kelvin
-        TABLE.Field
-        """
-
-        try:
-            value = \
-                get_extcsv_value(self.extcsv, 'TABLE', 'FIeld')
-        except Exception as err:
-            msg = 'Unable to get TABLE.Field \
-            value. Due to: %s' % str(err)
-            LOGGER.error(msg)
-            raise err(msg)
-
-        try:
-            pump_temp_f = float(value)
-            pump_temp_f_uc = unit_converter(pump_temp_f, 'degC', 'kelvin')
-        except Exception as err:
-            msg = 'Invalid float: %s' % value
-            LOGGER.error(msg)
-            raise err(msg)
-
-        if pump_temp_f_uc is not None:
-            try:
-                self.extcsv = \
-                    set_extcsv_value(
-                        self.extcsv,
-                        'TABLE',
-                        'Field',
-                        pump_temp_f_uc
-                    )
-            except Exception as err:
-                msg = 'Unable to set value for \
-                TABLE.Field. Due to: %s' % str(err)
                 LOGGER.error(msg)
                 raise err(msg)
 
