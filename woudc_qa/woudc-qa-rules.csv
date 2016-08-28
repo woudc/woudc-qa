@@ -19,7 +19,7 @@ ozonesonde,17,1,15,100,,,,,,,,,FLIGHT_SUMMARY,,SondeTotalO3,0,range,RC_1,200,500
 ozonesonde,18,1,15,100,,,,,,,,,FLIGHT_SUMMARY,,SondeTotalO3,0,range,RC_1,80,600,,0|100,
 ozonesonde,19,1,,,,,,,,,,,PUMP_CORRECTION,,PumpCorrectionFactor,0,presence,PR_1,,,,-1|100,
 ozonesonde,20,1,19,100,,,,,,,,,PUMP_CORRECTION,,PumpCorrectionFactor,0,range,RC_1,0.6,1.8,,0|100,
-ozonesonde,21,1,19,100,,,,,,,,,PUMP_CORRECTION,,PumpCorrectionFactor,0,range,RC_1,0.4,2.0,,0|100,
+ozonesonde,21,1,19,100,,,,,,,,,PUMP_CORRECTION,,PumpCorrectionFactor,0,range,RC_1,0.4,2,,0|100,
 ozonesonde,22P,1,,,,,,,,,,,PROFILE,,GPHeight,1,presence,PR_1,,,,-1|100,
 ozonesonde,23P,1,22P,100,,,,,,,,,PROFILE,,GPHeight,1,step,TS_2,10,,,0|100,
 ozonesonde,24P,1,,,,,,,,,,,PROFILE,,Pressure,1,presence,PR_1,,,,-1|100,
@@ -34,3 +34,4 @@ ozonesonde,32,1,"26,31P","100,100",,,,,,,,,PROFILE,,O3PartialPressure,1,range,RC
 ozonesonde,33P,1,24P,100,,,,,,,,,PROFILE,,Pressure,1,range,RC_5,20,,,0|100,
 ozonesonde,34P,1,,,,,,,,,,,PROFILE,,derived:VMR,1,presence,,,,,-1|100,
 ozonesonde,25,1,"33P,34P","100,100",,,,,,,,,PROFILE,,derived:VMR,1,range,RC_1,3,9,,0|100,
+totalozone,35,1,,,,,,,,,,,DAILY,,ColumnO3,1,range,RC_1,100,700,,0|100,
