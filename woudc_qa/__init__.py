@@ -49,7 +49,7 @@ import csv
 import logging
 from collections import OrderedDict
 import woudc_extcsv
-from woudc_qa.util import get_extcsv_value
+from woudc_qa.util import get_extcsv_value, summarize
 from woudc_qa.dataset_handlers import OzoneSondeHandler, TotalOzoneHandler
 
 __version__ = '0.1.1'
@@ -1077,7 +1077,7 @@ class WOUDCQaNotImplementedError(Exception):
     pass
 
 
-def qa(file_content, file_path=None, rule_path=None):
+def qa(file_content, file_path=None, rule_path=None, summary=False):
     """
     Parse incoming file content, invoke dataset handlers,
     and invoke quality checker
@@ -1129,7 +1129,10 @@ def qa(file_content, file_path=None, rule_path=None):
         LOGGER.critical(msg)
         raise WOUDCQaExecutionError(msg)
 
-    return qa_checker.qa_results
+    if not summary:
+        return qa_checker.qa_results
+    else:
+        return summarize(qa_checker.qa_results, qa_checker.qa_rules)
 
 
 def load(filename):
