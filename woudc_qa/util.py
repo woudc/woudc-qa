@@ -209,8 +209,7 @@ def summarize(qa_result):
                             error_type,
                             test_id,
                             row_num,
-                            test_def
-                            )
+                            test_def)
                         if ss is not None:
                             violations.append(ss)
                             v_id += 1
@@ -223,8 +222,7 @@ def _build_summary_string(
         error_type,
         test_id,
         row_number,
-        test_def
-        ):
+        test_def):
     """
     build qa result summary message like so:
     [violation-id]-[error-type]-[test-id]-[table]\
@@ -263,7 +261,6 @@ a <= x <= b, where a=A, b=B' % msg_stem,
         table_ix,
         field,
         row_number,
-        msg
-        )
+        msg)
 
     return summary
