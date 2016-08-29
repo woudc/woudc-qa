@@ -179,3 +179,91 @@ def set_extcsv_value(extcsv, table, field, value, table_index=1,
         set_extcsv_value(extcsv, table, '_raw', value)
 
     return extcsv
+
+
+def summarize(qa_result):
+    """
+    summarize qa result
+
+    :param qa_result: raw qa result
+    :returns: list of summary strings of the form
+    """
+
+    # iterate over test results by row:
+    v_id = 0
+    violations = []
+    test_def = None
+    fail = '0'
+    error_type = 'error'
+    for file, tests in qa_result.iteritems():
+        for test_id, rows in tests.iteritems():
+            test_id = test_id
+            test_def = rows['test_def']
+            for k, v in rows.iteritems():
+                if k != 'test_def':
+                    row_num = k
+                    result = v['result']
+                    if result == fail:  # summary all failed qa
+                        ss = _build_summary_string(
+                            v_id,
+                            error_type,
+                            test_id,
+                            row_num,
+                            test_def
+                            )
+                        if ss is not None:
+                            violations.append(ss)
+                            v_id += 1
+
+    return violations
+
+
+def _build_summary_string(
+        violation_id,
+        error_type,
+        test_id,
+        row_number,
+        test_def
+        ):
+    """
+    build qa result summary message like so:
+    [violation-id]-[error-type]-[test-id]-[table]\
+    -[table index]-[field]-[row number]-[message]
+
+    :returns: summary string
+    """
+    function = test_def['function']
+    msg_stem = 'WOUDC data quality assessment failed.'
+    messages = {
+        'RC_1': '%s Due to value = x outside the range:\
+a <= x <= b, where a=A, b=B' % msg_stem,
+        'RC_5': '%s Due to value is less then A' % msg_stem,
+        'RC_6': '%s Due to value is greater then A' % msg_stem,
+    }
+
+    if function in messages.keys():
+        msg = messages[function]
+
+        msg = msg.replace('A', test_def['function_parameter_a'])
+        if function == 'RC_1':
+            msg = msg.replace('B', test_def['function_parameter_b'])
+    else:
+        # msg = msg_stem
+        return None
+
+    table = test_def['table']
+    table_ix = test_def['table_index']
+    field = test_def['element']
+
+    summary = '%s-%s-%s-%s-%s-%s-%s-%s' % (
+        violation_id,
+        error_type,
+        test_id,
+        table,
+        table_ix,
+        field,
+        row_number,
+        msg
+        )
+
+    return summary

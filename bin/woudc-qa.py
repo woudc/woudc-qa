@@ -65,4 +65,4 @@ ARGS = PARSER.parse_args()
 
 if ARGS.file is not None:
     file_str = open(ARGS.file).read()
-    print qa(file_str)
+    print qa(file_str, summary=True)
