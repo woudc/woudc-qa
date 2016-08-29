@@ -1132,7 +1132,7 @@ def qa(file_content, file_path=None, rule_path=None, summary=False):
     if not summary:
         return qa_checker.qa_results
     else:
-        return summarize(qa_checker.qa_results, qa_checker.qa_rules)
+        return summarize(qa_checker.qa_results)
 
 
 def load(filename):

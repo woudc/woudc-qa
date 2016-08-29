@@ -181,12 +181,11 @@ def set_extcsv_value(extcsv, table, field, value, table_index=1,
     return extcsv
 
 
-def summarize(qa_result, qa_tests):
+def summarize(qa_result):
     """
     summarize qa result
 
     :param qa_result: raw qa result
-    :param qa_tests: test definitions
     :returns: list of summary strings of the form
     """
 
@@ -212,9 +211,9 @@ def summarize(qa_result, qa_tests):
                             row_num,
                             test_def
                             )
-
-                        violations.append(ss)
-                        v_id += 1
+                        if ss is not None:
+                            violations.append(ss)
+                            v_id += 1
 
     return violations
 
@@ -249,7 +248,8 @@ a <= x <= b, where a=A, b=B' % msg_stem,
         if function == 'RC_1':
             msg = msg.replace('B', test_def['function_parameter_b'])
     else:
-        msg = msg_stem
+        # msg = msg_stem
+        return None
 
     table = test_def['table']
     table_ix = test_def['table_index']
