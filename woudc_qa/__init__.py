@@ -52,7 +52,7 @@ import woudc_extcsv
 from woudc_qa.util import get_extcsv_value, summarize
 from woudc_qa.dataset_handlers import OzoneSondeHandler, TotalOzoneHandler
 
-__version__ = '0.1.2'
+__version__ = '0.2.0'
 
 __dirpath = os.path.dirname(os.path.realpath(__file__))
 
