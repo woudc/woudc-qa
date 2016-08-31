@@ -1077,6 +1077,15 @@ class WOUDCQaNotImplementedError(Exception):
     pass
 
 
+class WOUDCQaValidationError(Exception):
+    """File failed one or more defined Qa checks"""
+
+    def __init__(self, message, errors):
+        """provide an error message and error stack"""
+        super(WOUDCQaValidationError, self).__init__(message)
+        self.errors = errors
+
+
 def qa(file_content, file_path=None, rule_path=None, summary=False):
     """
     Parse incoming file content, invoke dataset handlers,
@@ -1085,6 +1094,8 @@ def qa(file_content, file_path=None, rule_path=None, summary=False):
     :param file_content: file as string
     :param file_path: path to file (optional)
     """
+
+    success = 'File passed all defined WOUDC quality assessment checks.'
 
     # parse incoming file content
     try:
@@ -1132,7 +1143,13 @@ def qa(file_content, file_path=None, rule_path=None, summary=False):
     if not summary:
         return qa_checker.qa_results
     else:
-        return summarize(qa_checker.qa_results)
+        errors = summarize(qa_checker.qa_results)
+        if len(errors) != 0:
+            errors = list(set(errors))
+            msg = 'File failed WOUDC quality assessment checks.'
+            raise WOUDCQaValidationError(msg, errors)
+
+    return success
 
 
 def load(filename):

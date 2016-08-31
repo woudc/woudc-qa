@@ -198,21 +198,22 @@ def summarize(qa_result):
     for file, tests in qa_result.iteritems():
         for test_id, rows in tests.iteritems():
             test_id = test_id
-            test_def = rows['test_def']
-            for k, v in rows.iteritems():
-                if k != 'test_def':
-                    row_num = k
-                    result = v['result']
-                    if result == fail:  # summary all failed qa
-                        ss = _build_summary_string(
-                            v_id,
-                            error_type,
-                            test_id,
-                            row_num,
-                            test_def)
-                        if ss is not None:
-                            violations.append(ss)
-                            v_id += 1
+            if 'P' not in test_id:  # skip pre-condition test results
+                test_def = rows['test_def']
+                for k, v in rows.iteritems():
+                    if k != 'test_def':
+                        row_num = k
+                        result = v['result']
+                        if result == fail:  # summary all failed qa
+                            ss = _build_summary_string(
+                                v_id,
+                                error_type,
+                                test_id,
+                                row_num,
+                                test_def)
+                            if ss is not None:
+                                violations.append(ss)
+                                v_id += 1
 
     return violations
 
