@@ -121,6 +121,7 @@ def find_packages(path, base=''):
             packages.update(find_packages(dirp, module_name))
     return packages
 
+
 setup(
     name='woudc-qa',
     version=VERSION,
