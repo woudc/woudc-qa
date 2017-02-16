@@ -50,12 +50,12 @@ import logging
 from collections import OrderedDict
 import woudc_extcsv
 from woudc_qa.util import get_extcsv_value,\
- summarize,\
- get_table_ranges
+    summarize,\
+    get_table_ranges
 from woudc_qa.dataset_handlers import\
- OzoneSondeHandler,\
- TotalOzoneHandler,\
- SpectralHandler
+    OzoneSondeHandler,\
+    TotalOzoneHandler,\
+    SpectralHandler
 
 __version__ = '0.3.0'
 
@@ -273,8 +273,7 @@ class QualityChecker(object):
                         profile = True
                     if rule['table_index'] == '':
                         rule['table_index'] = 1
-                    if all([
-                            rule['table_index'] != '',
+                    if all([rule['table_index'] != '',
                             rule['table_index'] != 'all'
                             ]):
                             rule['table_index'] = int(rule['table_index'])
@@ -449,19 +448,18 @@ class QualityChecker(object):
                             t_result = 'Error'
 
                         try:
-                            self._set_test_result(
-                                                    rule['test_id'],
-                                                    rule,
-                                                    'result',
-                                                    t_result, row + 1
-                                                )
+                            self._set_test_result(rule['test_id'],
+                                                  rule,
+                                                  'result',
+                                                  t_result,
+                                                  row + 1
+                                                  )
                             if row == val_len - 2:
-                                self._set_test_result(
-                                                        rule['test_id'],
-                                                        rule,
-                                                        'result',
-                                                        t_result, row + 2
-                                                    )
+                                self._set_test_result(rule['test_id'],
+                                                      rule,
+                                                      'result',
+                                                      t_result, row + 2
+                                                      )
                         except Exception as err:
                             msg = 'Unable to set test result for test id: %s \
                             Due to: %s' % (rule['test_id'], str(err))
@@ -513,13 +511,12 @@ class QualityChecker(object):
                         result = 'NR'
                     # store result
                     try:
-                        self._set_test_result(
-                                                rule['test_id'],
-                                                rule,
-                                                'related_test_result',
-                                                result,
-                                                row
-                                            )
+                        self._set_test_result(rule['test_id'],
+                                              rule,
+                                              'related_test_result',
+                                              result,
+                                              row
+                                              )
                     except Exception as err:
                         msg = 'Unable to set related test result.\
                         Due to: %s' % str(err)
@@ -533,11 +530,10 @@ class QualityChecker(object):
                             t_result = None
                             # determine type of range check
                             if function == 'RC_1':
-                                t_result = self._function_rc_1(
-                                                                param_a,
-                                                                param_b,
-                                                                val
-                                                            )
+                                t_result = self._function_rc_1(param_a,
+                                                               param_b,
+                                                               val
+                                                               )
                             elif function == 'RC_5':
                                 t_result = self._function_rc_5(param_a, val)
                             elif function == 'RC_6':
@@ -555,13 +551,12 @@ class QualityChecker(object):
                             LOGGER.error(msg)
                             t_result = 'Error'
                         try:
-                            self._set_test_result(
-                                                    rule['test_id'],
-                                                    rule,
-                                                    'result',
-                                                    t_result,
-                                                    row
-                                                )
+                            self._set_test_result(rule['test_id'],
+                                                  rule,
+                                                  'result',
+                                                  t_result,
+                                                  row
+                                                  )
                         except Exception as err:
                             msg = 'Unable to set test result for test id: %s \
                                 Due to: %s' % (rule['test_id'], str(err))
@@ -641,13 +636,12 @@ class QualityChecker(object):
                         result = 'NR'
                     # store result
                     try:
-                        self._set_test_result(
-                                                rule['test_id'],
-                                                rule,
-                                                'related_test_result',
-                                                result,
-                                                row
-                                            )
+                        self._set_test_result(rule['test_id'],
+                                              rule,
+                                              'related_test_result',
+                                              result,
+                                              row
+                                              )
                     except Exception as err:
                         msg = 'Unable to set related test result.\
                         Due to: %s' % str(err)
@@ -673,13 +667,12 @@ class QualityChecker(object):
                             LOGGER.error(msg)
                             t_result = 'Error'
                         try:
-                            self._set_test_result(
-                                                    rule['test_id'],
-                                                    rule,
-                                                    'result',
-                                                    t_result,
-                                                    row
-                                                )
+                            self._set_test_result(rule['test_id'],
+                                                  rule,
+                                                  'result',
+                                                  t_result,
+                                                  row
+                                                  )
                         except Exception as err:
                             msg = 'Unable to set test result for test id: %s \
                             Due to: %s' % (rule['test_id'], str(err))
