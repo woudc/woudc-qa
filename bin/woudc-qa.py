@@ -49,7 +49,10 @@
 import logging
 import argparse
 from woudc_qa import \
-    qa
+    qa,\
+    WOUDCQaExecutionError,\
+    WOUDCQaNotImplementedError,\
+    WOUDCQaValidationError
 
 LOGGER = logging.getLogger(__name__)
 
@@ -65,4 +68,14 @@ ARGS = PARSER.parse_args()
 
 if ARGS.file is not None:
     file_str = open(ARGS.file).read()
-    print qa(file_str, summary=True)
+    try:
+        qa(file_str, summary=True)
+    except WOUDCQaNotImplementedError as err:
+        print err
+    except WOUDCQaExecutionError as err:
+        print err
+    except WOUDCQaValidationError as err:
+        explanation = '%s: %s' % (err.message, '\n'.join(err.errors))
+        print explanation
+    except Exception as err:
+        print err

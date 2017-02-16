@@ -239,6 +239,47 @@ class QaTest(unittest.TestCase):
         with self.assertRaises(WOUDCQaNotImplementedError):
             qa(file_s, rule_path=WOUDC_QA_RULES)
 
+    def test_bad_range_check3(self):
+        """test range check"""
+
+        # spectral
+        file_s = read_file(
+            'data/spectral/20030215.brewer.mkiv.130.epa_uga-bad.csv')
+        qa_results = qa(file_s, rule_path=WOUDC_QA_RULES)
+        self.assertEqual('0', qa_results['file1']['36'][1]['result'],
+                         'range check')
+        self.assertEqual('0', qa_results['file1']['36'][2]['result'],
+                         'range check')
+        self.assertEqual('0', qa_results['file1']['36'][9]['result'],
+                         'range check')
+        self.assertEqual('0', qa_results['file1']['36'][23]['result'],
+                         'range check')
+        self.assertEqual('100', qa_results['file1']['36'][4]['result'],
+                         'range check')
+        self.assertEqual('100', qa_results['file1']['36'][6]['result'],
+                         'range check')
+
+    def test_bad_range_check4(self):
+        """test range check"""
+
+        # spectral
+        file_s = read_file(
+            'data/spectral/20030215.brewer.mkiv.130.epa_uga-good.csv')
+        qa_results = qa(file_s, rule_path=WOUDC_QA_RULES)
+        self.assertEqual('100', qa_results['file1']['36'][1]['result'],
+                         'range check')
+        self.assertEqual('100', qa_results['file1']['36'][2]['result'],
+                         'range check')
+        self.assertEqual('100', qa_results['file1']['36'][23]['result'],
+                         'range check')
+        self.assertEqual('100', qa_results['file1']['36'][23]['result'],
+                         'range check')
+        self.assertEqual('100', qa_results['file1']['36'][4]['result'],
+                         'range check')
+        self.assertEqual('100', qa_results['file1']['36'][6]['result'],
+                         'range check')
+
+
 # main
 if __name__ == '__main__':
     unittest.main()

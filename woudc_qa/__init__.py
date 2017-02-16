@@ -49,10 +49,15 @@ import csv
 import logging
 from collections import OrderedDict
 import woudc_extcsv
-from woudc_qa.util import get_extcsv_value, summarize
-from woudc_qa.dataset_handlers import OzoneSondeHandler, TotalOzoneHandler
+from woudc_qa.util import get_extcsv_value,\
+ summarize,\
+ get_table_ranges
+from woudc_qa.dataset_handlers import\
+ OzoneSondeHandler,\
+ TotalOzoneHandler,\
+ SpectralHandler
 
-__version__ = '0.2.0'
+__version__ = '0.3.0'
 
 __dirpath = os.path.dirname(os.path.realpath(__file__))
 
@@ -250,7 +255,6 @@ class QualityChecker(object):
             msg = 'Unable to load definitions. Due to: %s' % str(err)
             LOGGER.critical(msg)
             raise err
-
         # get qa rules for this dataset
         if self.dataset not in self.qa_rules.keys():
             msg = 'No Qa rules defined for dataset: %s' % self.dataset
@@ -269,6 +273,11 @@ class QualityChecker(object):
                         profile = True
                     if rule['table_index'] == '':
                         rule['table_index'] = 1
+                    if all([
+                            rule['table_index'] != '',
+                            rule['table_index'] != 'all'
+                            ]):
+                            rule['table_index'] = int(rule['table_index'])
                     # setup flag map
                     poss_results = rule['test_results'].split('|')
                     flag_map = {
@@ -364,83 +373,107 @@ class QualityChecker(object):
         field = rule['element']
         function = rule['function']
         param_a = rule['function_parameter_a']
-        value = \
-            get_extcsv_value(self.extcsv, table, field, table_index,
-                             payload=profile)
-        if profile:
-            # get related tests
-            row = 0
-            val_len = len(value)
-            while row < val_len - 3:
-                continue_testing = False
-                try:
-                    # got to check row-1 and row
-                    this_row_result = self.check_related_test(rule, row)
-                    next_row_result = self.check_related_test(rule, row + 1)
-                except Exception as err:
-                    msg = 'Unable to run test_id: %s.\
-                        Due to: related test unable to run.' % rule['test_id']
-                    LOGGER.error(msg)
-                    result = 'NR'
-                # store result
-                if all([this_row_result is True, next_row_result is True]):
-                    result = True
-                try:
-                    self._set_test_result(rule['test_id'], rule,
-                                          'related_test_result', result,
-                                          row + 1)
-                except Exception as err:
-                    msg = 'Unable to set related test result.\
-                    Due to: %s' % str(err)
-                    LOGGER.error(msg)
-                    row += 1
-                    continue
-                if any([result is None, result is True]):
-                    # if result:
-                    continue_testing = True
-                if continue_testing:
+        # handle table index
+        a, b = get_table_ranges(self.extcsv, table, table_index)
+        for ti in range(a, b):
+            # get value from extcsv
+            try:
+                value = \
+                    get_extcsv_value(self.extcsv, table, field, ti,
+                                     payload=profile)
+            except KeyError:
+                msg = \
+                    'Unable to get value at Table: %s,\
+                    table index: %s,\
+                    field: %s'\
+                    % (table, ti, field)
+                LOGGER.info(msg)
+                continue
+            if profile:
+                # get related tests
+                row = 0
+                val_len = len(value)
+                while row < val_len - 3:
+                    continue_testing = False
                     try:
-                        t_result = None
-                        # determine type of step check
-                        if function == 'TS_0':
-                            t_result =\
-                                self._function_ts_0(value[row], value[row + 1],
-                                                    param_a)
-                        elif function == 'TS_2':
-                            t_result = self._function_ts_2(value[row],
-                                                           value[row + 1],
-                                                           param_a)
-                        else:
-                            msg = 'Unrecognized step check function: %s.\
-                            for test_id: %s' % (function, rule['test_id'])
+                        # got to check row-1 and row
+                        this_row_result =\
+                            self.check_related_test(rule, row)
+                        next_row_result =\
+                            self.check_related_test(rule, row + 1)
+                    except Exception as err:
+                        msg = 'Unable to run test_id: %s.\
+                            Due to: related test unable to run.'\
+                            % rule['test_id']
+                        LOGGER.error(msg)
+                        result = 'NR'
+                    # store result
+                    if all([this_row_result is True, next_row_result is True]):
+                        result = True
+                    try:
+                        self._set_test_result(rule['test_id'], rule,
+                                              'related_test_result', result,
+                                              row + 1)
+                    except Exception as err:
+                        msg = 'Unable to set related test result.\
+                        Due to: %s' % str(err)
+                        LOGGER.error(msg)
+                        row += 1
+                        continue
+                    if any([result is None, result is True]):
+                        # if result:
+                        continue_testing = True
+                    if continue_testing:
+                        try:
+                            t_result = None
+                            # determine type of step check
+                            if function == 'TS_0':
+                                t_result =\
+                                    self._function_ts_0(value[row],
+                                                        value[row + 1],
+                                                        param_a)
+                            elif function == 'TS_2':
+                                t_result = self._function_ts_2(value[row],
+                                                               value[row + 1],
+                                                               param_a)
+                            else:
+                                msg = 'Unrecognized step check function: %s.\
+                                for test_id: %s' % (function, rule['test_id'])
+                                LOGGER.error(msg)
+                                t_result = 'Error'
+                            t_result = flag_map[t_result]
+                        except Exception as err:
+                            msg = 'Unable to do step check for test_id: %s. \
+                                Due to: %s' % (rule['test_id'], str(err))
                             LOGGER.error(msg)
                             t_result = 'Error'
-                        t_result = flag_map[t_result]
-                    except Exception as err:
-                        msg = 'Unable to do step check for test_id: %s. \
+
+                        try:
+                            self._set_test_result(
+                                                    rule['test_id'],
+                                                    rule,
+                                                    'result',
+                                                    t_result, row + 1
+                                                )
+                            if row == val_len - 2:
+                                self._set_test_result(
+                                                        rule['test_id'],
+                                                        rule,
+                                                        'result',
+                                                        t_result, row + 2
+                                                    )
+                        except Exception as err:
+                            msg = 'Unable to set test result for test id: %s \
                             Due to: %s' % (rule['test_id'], str(err))
-                        LOGGER.error(msg)
-                        t_result = 'Error'
+                            LOGGER.error(msg)
+                            pass
 
-                    try:
-                        self._set_test_result(rule['test_id'], rule, 'result',
-                                              t_result, row + 1)
-                        if row == val_len - 2:
-                            self._set_test_result(rule['test_id'], rule,
-                                                  'result', t_result, row + 2)
-                    except Exception as err:
-                        msg = 'Unable to set test result for test id: %s \
-                        Due to: %s' % (rule['test_id'], str(err))
-                        LOGGER.error(msg)
-                        pass
-
-                row += 1
+                    row += 1
 
     def do_range_check(self, rule, profile, flag_map):
         """
         do range check.
         """
-
         result = None
         # unpackge rule
         table = rule['table']
@@ -449,95 +482,122 @@ class QualityChecker(object):
         function = rule['function']
         param_a = rule['function_parameter_a']
         param_b = rule['function_parameter_b']
-        # get value from extcsv
-        value = \
-            get_extcsv_value(self.extcsv, table, field, table_index,
-                             payload=profile)
-        if profile:
-            # get related tests
-            row = 1
-            for val in value:
-                continue_testing = False
-                try:
-                    result = self.check_related_test(rule, row)
-                except Exception as err:
-                    msg = 'Unable to run test_id: %s.\
-                        Due to: related test unable to run.' % rule['test_id']
-                    LOGGER.error(msg)
-                    result = 'NR'
-                # store result
-                try:
-                    self._set_test_result(rule['test_id'], rule,
-                                          'related_test_result', result, row)
-                except Exception as err:
-                    msg = 'Unable to set related test result.\
-                    Due to: %s' % str(err)
-                    LOGGER.error(msg)
-                    row += 1
-                    continue
-                if any([result is None, result is True]):
-                    continue_testing = True
-                if continue_testing:
+        # handle table index
+        a, b = get_table_ranges(self.extcsv, table, table_index)
+        for ti in range(a, b):
+            # get value from extcsv
+            try:
+                value = \
+                    get_extcsv_value(self.extcsv, table, field, ti,
+                                     payload=profile)
+            except KeyError:
+                msg = \
+                    'Unable to get value at Table: %s,\
+                    table index: %s,\
+                    field: %s'\
+                % (table, ti, field)
+                LOGGER.info(msg)
+                continue
+            if profile:
+                # get related tests
+                row = 1
+                for val in value:
+                    continue_testing = False
                     try:
-                        t_result = None
-                        # determine type of range check
-                        if function == 'RC_1':
-                            t_result = self._function_rc_1(param_a, param_b,
-                                                           val)
-                        elif function == 'RC_5':
-                            t_result = self._function_rc_5(param_a, val)
-                        elif function == 'RC_6':
-                            t_result = self._function_rc_6(param_a, val)
-                        else:
-                            msg = 'Unrecognized range check function: %s.\
-                                for test_id: %s' % (function, rule['test_id'])
+                        result = self.check_related_test(rule, row)
+                    except Exception as err:
+                        msg = 'Unable to run test_id: %s.\
+                            Due to: related test unable to run.' %\
+                            rule['test_id']
+                        LOGGER.error(msg)
+                        result = 'NR'
+                    # store result
+                    try:
+                        self._set_test_result(
+                                                rule['test_id'],
+                                                rule,
+                                                'related_test_result',
+                                                result,
+                                                row
+                                            )
+                    except Exception as err:
+                        msg = 'Unable to set related test result.\
+                        Due to: %s' % str(err)
+                        LOGGER.error(msg)
+                        row += 1
+                        continue
+                    if any([result is None, result is True]):
+                        continue_testing = True
+                    if continue_testing:
+                        try:
+                            t_result = None
+                            # determine type of range check
+                            if function == 'RC_1':
+                                t_result = self._function_rc_1(
+                                                                param_a,
+                                                                param_b,
+                                                                val
+                                                            )
+                            elif function == 'RC_5':
+                                t_result = self._function_rc_5(param_a, val)
+                            elif function == 'RC_6':
+                                t_result = self._function_rc_6(param_a, val)
+                            else:
+                                msg = 'Unrecognized range check function: %s.\
+                                    for test_id: %s' %\
+                                    (function, rule['test_id'])
+                                LOGGER.error(msg)
+                                t_result = 'Error'
+                            t_result = flag_map[t_result]
+                        except Exception as err:
+                            msg = 'Unable to do range check for test_id: %s. \
+                                Due to: %s' % (rule['test_id'], str(err))
                             LOGGER.error(msg)
                             t_result = 'Error'
-                        t_result = flag_map[t_result]
-                    except Exception as err:
-                        msg = 'Unable to do range check for test_id: %s. \
-                            Due to: %s' % (rule['test_id'], str(err))
+                        try:
+                            self._set_test_result(
+                                                    rule['test_id'],
+                                                    rule,
+                                                    'result',
+                                                    t_result,
+                                                    row
+                                                )
+                        except Exception as err:
+                            msg = 'Unable to set test result for test id: %s \
+                                Due to: %s' % (rule['test_id'], str(err))
+                            LOGGER.error(msg)
+                            continue
+                    row += 1
+            else:
+                try:
+                    t_result = None
+                    # determine type of range check
+                    if function == 'RC_1':
+                        t_result = self._function_rc_1(param_a, param_b, value)
+                    elif function == 'RC_5':
+                        t_result = self._function_rc_5(param_a, value)
+                    elif function == 'RC_6':
+                        t_result = self._function_rc_6(param_a, value)
+                    else:
+                        msg = 'Unrecognized range check function: %s.\
+                        for test_id: %s' % (function, rule['test_id'])
                         LOGGER.error(msg)
                         t_result = 'Error'
-                    try:
-                        self._set_test_result(rule['test_id'], rule, 'result',
-                                              t_result, row)
-                    except Exception as err:
-                        msg = 'Unable to set test result for test id: %s \
-                            Due to: %s' % (rule['test_id'], str(err))
-                        LOGGER.error(msg)
-                        continue
-                row += 1
-        else:
-            try:
-                t_result = None
-                # determine type of range check
-                if function == 'RC_1':
-                    t_result = self._function_rc_1(param_a, param_b, value)
-                elif function == 'RC_5':
-                    t_result = self._function_rc_5(param_a, value)
-                elif function == 'RC_6':
-                    t_result = self._function_rc_6(param_a, value)
-                else:
-                    msg = 'Unrecognized range check function: %s.\
-                    for test_id: %s' % (function, rule['test_id'])
+                    t_result = flag_map[t_result]
+                except Exception as err:
+                    msg = 'Unable to do range check for test_id: %s.\
+                        Due to: %s' % (rule['test_id'], str(err))
                     LOGGER.error(msg)
                     t_result = 'Error'
-                t_result = flag_map[t_result]
-            except Exception as err:
-                msg = 'Unable to do range check for test_id: %s. Due to: %s' \
-                    % (rule['test_id'], str(err))
-                LOGGER.error(msg)
-                t_result = 'Error'
-                # continue
-            try:
-                self._set_test_result(rule['test_id'], rule, 'result',
-                                      t_result, 1)
-            except Exception as err:
-                msg = 'Unable to set test result for test id: %s \
-                Due to: %s' % (rule['test_id'], str(err))
-                pass
-                LOGGER.error(msg)
+                    # continue
+                try:
+                    self._set_test_result(rule['test_id'], rule, 'result',
+                                          t_result, ti)
+                except Exception as err:
+                    msg = 'Unable to set test result for test id: %s \
+                    Due to: %s' % (rule['test_id'], str(err))
+                    pass
+                    LOGGER.error(msg)
 
     def do_presence_check(self, rule, profile, flag_map):
         """
@@ -550,123 +610,137 @@ class QualityChecker(object):
         table_index = rule['table_index']
         field = rule['element']
         function = rule['function']
-        # get value from extcsv
-        value = \
-            get_extcsv_value(self.extcsv, table, field, table_index,
-                             payload=profile)
-        if profile:
-            # get related tests
-            row = 1
-            for val in value:
-                continue_testing = False
-                try:
-                    result = self.check_related_test(rule, row)
-                except Exception as err:
-                    msg = 'Unable to run test_id: %s.\
-                        Due to: related test unable to run.' % rule['test_id']
-                    LOGGER.error(msg)
-                    result = 'NR'
-                # store result
-                try:
-                    self._set_test_result(rule['test_id'], rule,
-                                          'related_test_result', result, row)
-                except Exception as err:
-                    msg = 'Unable to set related test result.\
-                    Due to: %s' % str(err)
-                    LOGGER.error(msg)
-                    row += 1
-                    continue
-                if any([result is None, result is True]):
-                    continue_testing = True
-                if continue_testing:
+        # handle table index
+        a, b = get_table_ranges(self.extcsv, table, table_index)
+        for ti in range(a, b):
+            # get value from extcsv
+            try:
+                value = \
+                    get_extcsv_value(self.extcsv, table, field, ti,
+                                     payload=profile)
+            except KeyError:
+                msg = \
+                    'Unable to get value at Table: %s,\
+                    table index: %s,\
+                    field: %s'\
+                    % (table, ti, field)
+                LOGGER.info(msg)
+                continue
+            if profile:
+                # get related tests
+                row = 1
+                for val in value:
+                    continue_testing = False
                     try:
-                        t_result = None
-                        if function == 'PR_1':
-                            t_result = self._function_pc_1(val)
-                        else:
-                            msg = 'Unrecognized presence check function: %s\
-                            in test_id: %s' % (function, rule['test_id'])
+                        result = self.check_related_test(rule, row)
+                    except Exception as err:
+                        msg = 'Unable to run test_id: %s.\
+                            Due to: related test unable to run.' %\
+                            rule['test_id']
+                        LOGGER.error(msg)
+                        result = 'NR'
+                    # store result
+                    try:
+                        self._set_test_result(
+                                                rule['test_id'],
+                                                rule,
+                                                'related_test_result',
+                                                result,
+                                                row
+                                            )
+                    except Exception as err:
+                        msg = 'Unable to set related test result.\
+                        Due to: %s' % str(err)
+                        LOGGER.error(msg)
+                        row += 1
+                        continue
+                    if any([result is None, result is True]):
+                        continue_testing = True
+                    if continue_testing:
+                        try:
+                            t_result = None
+                            if function == 'PR_1':
+                                t_result = self._function_pc_1(val)
+                            else:
+                                msg = 'Unrecognized presence check function: %s\
+                                in test_id: %s' % (function, rule['test_id'])
+                                LOGGER.error(msg)
+                                t_result = 'Error'
+                            t_result = flag_map[t_result]
+                        except Exception as err:
+                            msg = 'Unable to do presence check for test_id: %s. \
+                                Due to: %s' % (rule['test_id'], str(err))
                             LOGGER.error(msg)
                             t_result = 'Error'
-                        t_result = flag_map[t_result]
-                    except Exception as err:
-                        msg = 'Unable to do presence check for test_id: %s. \
+                        try:
+                            self._set_test_result(
+                                                    rule['test_id'],
+                                                    rule,
+                                                    'result',
+                                                    t_result,
+                                                    row
+                                                )
+                        except Exception as err:
+                            msg = 'Unable to set test result for test id: %s \
                             Due to: %s' % (rule['test_id'], str(err))
+                            LOGGER.error(msg)
+                            pass
+                    row += 1
+            else:
+                try:
+                    t_result = None
+                    if function == 'PR_1':
+                        t_result = self._function_pc_1(value)
+                    else:
+                        msg = 'Unrecognized presence check function: %s\
+                        in test_id: %s' % (function, rule['test_id'])
                         LOGGER.error(msg)
                         t_result = 'Error'
-                    try:
-                        self._set_test_result(rule['test_id'], rule, 'result',
-                                              t_result, row)
-                    except Exception as err:
-                        msg = 'Unable to set test result for test id: %s \
+                    t_result = flag_map[t_result]
+                except Exception as err:
+                    msg = 'Unable to do presence check for test_id: %s. \
                         Due to: %s' % (rule['test_id'], str(err))
-                        LOGGER.error(msg)
-                        pass
-                row += 1
-        else:
-            try:
-                t_result = None
-                if function == 'PR_1':
-                    t_result = self._function_pc_1(value)
-                else:
-                    msg = 'Unrecognized presence check function: %s\
-                    in test_id: %s' % (function, rule['test_id'])
                     LOGGER.error(msg)
                     t_result = 'Error'
-                t_result = flag_map[t_result]
-            except Exception as err:
-                msg = 'Unable to do presence check for test_id: %s. \
+                try:
+                    self._set_test_result(rule['test_id'], rule, 'result',
+                                          t_result, ti)
+                except Exception as err:
+                    msg = 'Unable to set test result for test id: %s \
                     Due to: %s' % (rule['test_id'], str(err))
-                LOGGER.error(msg)
-                t_result = 'Error'
-            try:
-                self._set_test_result(rule['test_id'], rule, 'result',
-                                      t_result, 1)
-            except Exception as err:
-                msg = 'Unable to set test result for test id: %s \
-                Due to: %s' % (rule['test_id'], str(err))
-                LOGGER.error(msg)
-                pass
+                    LOGGER.error(msg)
+                    pass
 
     def load_qa_definitions(self):
         """
         Load qa rules, functions and flag definitions
         """
-
-        # load csv
-        try:
-            qa_def_csv = open(self.rule_path, 'rb')
-            rows = csv.reader(qa_def_csv)
-        except Exception as err:
-            msg = 'Unable to read qa definition csv. Due to: %s' % str(err)
-            LOGGER.critical(msg)
-            raise err
-
         # load qa rules
-
-        header = []
-        i = 0
-        for row in rows:
-            dataset = None
-            rule = {}
-            j = 0
-            for val in row:
-                if i == 0:
-                    header.append(val)
-                else:
-                    if j == 0:  # dataset
-                        dataset = val
-                        if dataset not in self.qa_rules.keys():
-                            self.qa_rules[dataset] = []
+        with open(self.rule_path, 'rb') as qa_def_csv:
+            rows = csv.reader(qa_def_csv)
+            header = []
+            i = 0
+            for row in rows:
+                dataset = None
+                rule = {}
+                j = 0
+                for val in row:
+                    if i == 0:
+                        header.append(val)
                     else:
-                        rule_tok = header[j]
-                        if rule_tok not in rule.keys():
-                            rule[rule_tok] = val
-                j += 1
-            if len(rule) != 0:
-                self.qa_rules[dataset].append(rule)
+                        if j == 0:  # dataset
+                            dataset = val
+                            if dataset not in self.qa_rules.keys():
+                                self.qa_rules[dataset] = []
+                        else:
+                            rule_tok = header[j]
+                            if rule_tok not in rule.keys():
+                                rule[rule_tok] = val
+                    j += 1
+                if len(rule) != 0:
+                    self.qa_rules[dataset].append(rule)
 
-            i += 1
+                i += 1
 
     def check_related_test(self, rule, row):
         """
@@ -1119,8 +1193,10 @@ def qa(file_content, file_path=None, rule_path=None, summary=False):
             dataset_handler = OzoneSondeHandler(ecsv)
         if dataset.lower() == 'totalozone':
             dataset_handler = TotalOzoneHandler(ecsv)
+        if dataset.lower() == 'spectral':
+            dataset_handler = SpectralHandler(ecsv)
     except Exception as err:
-        msg = 'No handler found for dataset: %s. Cannot continue.' % \
+        msg = 'No handler found for dataset: %s. Cannot continue.' %\
             dataset.lower()
         LOGGER.critical(msg)
         raise err
@@ -1139,7 +1215,6 @@ def qa(file_content, file_path=None, rule_path=None, summary=False):
         msg = 'Unable to run Qa. Due to: %s' % str(err)
         LOGGER.critical(msg)
         raise WOUDCQaExecutionError(msg)
-
     if not summary:
         return qa_checker.qa_results
     else:

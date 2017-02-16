@@ -265,3 +265,33 @@ a <= x <= b, where a=A, b=B' % msg_stem,
         msg)
 
     return summary
+
+
+def get_table_count(extcsv, table):
+    """
+    Return the number of occurance of tables in
+    extcsv
+    """
+    count = 0
+    for t in extcsv.sections.keys():
+        if table in t:
+            count += 1
+
+    return count
+
+
+def get_table_ranges(extcsv, table, table_index):
+    """
+    Determine range of tables to assess based on
+    input table_index
+    """
+    a = None
+    b = None
+    if table_index == 'all':
+        a = 1
+        b = get_table_count(extcsv, table) + 1
+    else:
+        a = table_index
+        b = table_index + 1
+
+    return [a, b]

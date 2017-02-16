@@ -277,3 +277,38 @@ class TotalOzoneHandler(object):
         """
         run transformation and update extcsv in place
         """
+
+
+class SpectralHandler(object):
+    """Handles Spectral files."""
+
+    def __init__(self, extcsv):
+        """
+        Init SpectralHandler object
+
+        :param extcsv: woudc_extcsv.Reader object
+        """
+
+        self._extcsv = extcsv
+        # invoke transformation logic
+        self.run_all_transformations()
+
+    @property
+    def extcsv(self):
+        """
+        :returns: extcsv object
+        """
+
+        return self._extcsv
+
+    @extcsv.setter
+    def extcsv(self, extcsv):
+        """
+        Set extcsv
+        """
+        self._extcsv = extcsv
+
+    def run_all_transformations(self):
+        """
+        run transformation and update extcsv in place
+        """
