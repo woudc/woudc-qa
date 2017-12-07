@@ -13,7 +13,7 @@ Date,Agency,Version,ScientificAuthority
 
 #PLATFORM
 Type,ID,Name,Country,GAW_ID
-STN,034,Århus,DNK,AHS
+STN,034,Arhus,DNK,06070
 
 #INSTRUMENT
 Name,Model,Number

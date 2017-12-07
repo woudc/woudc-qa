@@ -9,7 +9,7 @@ Date,Agency,Version,ScientificAuthority
 
 #PLATFORM
 Type,ID,Name,Country,GAW_ID
-STN,418,Huntsville,USA
+STN,418,Huntsville (AL),USA
 
 #INSTRUMENT
 Name,Model,Number
