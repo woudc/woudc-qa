@@ -22,7 +22,7 @@ ECC,6A,6A28027
 
 #LOCATION
 Latitude,Longitude,Height
-60.14,1.19,80
+60.14,-1.19,80
 
 #TIMESTAMP
 UTCOffset,Date,Time

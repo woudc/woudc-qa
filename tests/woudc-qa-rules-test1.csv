@@ -1,5 +1,5 @@
 dataset,test_id,test_status,related_test_id,related_test_result,agency,platform,instrument_type,instrument_model,instrument_serial_number,instrument_latitude,instrument_longitude,datetime,table,table_index,element,profile,test_category,function,function_parameter_a,function_parameter_b,function_parameter_c,test_results,test_description
-ozonesonde,1,1,,,UKMO,STN043,ECC,,6A28027,"50.0,70.0","0,10",,AUXILIARY_DATA,,PumpRate,0,presence,PR_1,,,,-1|100,
+ozonesonde,1,1,,,UKMO,STN043,ECC,,6A28027,"50.0,70.0","-2,10",,AUXILIARY_DATA,,PumpRate,0,presence,PR_1,,,,-1|100,
 ozonesonde,2,1,1,100,,,,,,,,,AUXILIARY_DATA,,PumpRate,0,range,RC_1,0.25,0.35,,0|100,
 ozonesonde,22P,1,2,100,,,,,,,,,PROFILE,,GPHeight,1,presence,PR_1,,,,-1|100,
 ozonesonde,23P,1,22P,100,,,,,,,,,PROFILE,,GPHeight,1,step,TS_2,10,,,0|100,

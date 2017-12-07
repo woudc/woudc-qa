@@ -13,7 +13,7 @@ Date,Agency,Version,ScientificAuthority
 
 #PLATFORM
 Type,ID,Name,Country,GAW_ID
-STN,315,Eureka Lab,CAN
+STN,315,Eureka,CAN
 
 #INSTRUMENT
 Name,Model,Number
