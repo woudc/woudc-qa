@@ -6,7 +6,7 @@
 
 # WOUDC Quality Assessment library
 
-Python package for automatically quality assessing [WOUDC](http://woudc.org) data based on defined rules.
+Python package for automatically quality assessing [WOUDC](https://woudc.org) data based on defined rules.
 
 ## Installation
 
