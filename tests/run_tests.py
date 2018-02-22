@@ -286,7 +286,8 @@ class QaTest(unittest.TestCase):
         file_s = read_file(
             'data/totalozone/19870501.Dobson.Beck.092.DMI-sample3.csv')
         with self.assertRaises(woudc_extcsv.ExtCSVValidatorException):
-            qa(file_s, rule_path=WOUDC_QA_RULES, summary=True)
+            qa(file_s, rule_path=WOUDC_QA_RULES, summary=True,
+               validate_metadata=True)
 
     def test_validator_error2(self):
         """test that bad metadata results in correct error"""
@@ -294,7 +295,8 @@ class QaTest(unittest.TestCase):
         file_s = read_file(
             'data/totalozone/19870501.Dobson.Beck.092.DMI-sample3.csv')
         try:
-            qa(file_s, rule_path=WOUDC_QA_RULES, summary=True)
+            qa(file_s, rule_path=WOUDC_QA_RULES, summary=True,
+               validate_metadata=True)
         except Exception, err:
             self.assertTrue('Platform name of Arhus does \
 not match database' in str(err))
@@ -304,7 +306,8 @@ not match database' in str(err))
 
         file_s = read_file(
             'data/totalozone/19870501.Dobson.Beck.092.DMI-sample4.csv')
-        qa_results = qa(file_s, rule_path=WOUDC_QA_RULES, summary=True)
+        qa_results = qa(file_s, rule_path=WOUDC_QA_RULES, summary=True,
+                        validate_metadata=True)
         self.assertTrue('Some lines in this file have \
 fewer commas than there are headers' in qa_results)
 
@@ -313,7 +316,8 @@ fewer commas than there are headers' in qa_results)
 
         file_s = read_file(
             'data/totalozone/19870501.Dobson.Beck.092.DMI-sample2.csv')
-        qa_results = qa(file_s, rule_path=WOUDC_QA_RULES, summary=True)
+        qa_results = qa(file_s, rule_path=WOUDC_QA_RULES, summary=True,
+                        validate_metadata=True)
         self.assertEqual('File passed all defined WOUDC \
 quality assessment checks.', qa_results)
 
