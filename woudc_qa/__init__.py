@@ -1153,7 +1153,8 @@ class WOUDCQaValidationError(Exception):
         self.errors = errors
 
 
-def qa(file_content, file_path=None, rule_path=None, summary=False, validate_metadata=False): # noqa
+def qa(file_content, file_path=None, rule_path=None, summary=False,
+       validate_metadata=False):
     """
     Parse incoming file content, invoke dataset handlers,
     and invoke quality checker
