@@ -1153,7 +1153,8 @@ class WOUDCQaValidationError(Exception):
         self.errors = errors
 
 
-def qa(file_content, file_path=None, rule_path=None, summary=False):
+def qa(file_content, file_path=None, rule_path=None, summary=False,
+       validate_metadata=False):
     """
     Parse incoming file content, invoke dataset handlers,
     and invoke quality checker
@@ -1172,23 +1173,24 @@ def qa(file_content, file_path=None, rule_path=None, summary=False):
         LOGGER.error(msg)
         raise err
 
-    try:
-        validation_dict = ecsv.metadata_validator()
-    except Exception as err:
-        msg = 'Unable to validate file. Due to: %s' % str(err)
-        LOGGER.error(msg)
-        raise err
+    if validate_metadata:
+        try:
+            validation_dict = ecsv.metadata_validator()
+        except Exception as err:
+            msg = 'Unable to validate file. Due to: %s' % str(err)
+            LOGGER.error(msg)
+            raise err
 
-    if not validation_dict['status']:
-        msg = 'Validation failed due to:\nError:\n' +\
-            '\n'.join(validation_dict['errors']) +\
-            '\nWarning:\n' + '\n'.join(validation_dict['warnings'])
-        LOGGER.error(msg)
-        raise woudc_extcsv.ExtCSVValidatorException(msg)
-    elif validation_dict['warnings'] != []:
-        msg = '\nValidation warnings due to:\nWarning:\n' +\
-            '\n'.join(validation_dict['warnings'])
-        success = success + msg
+        if not validation_dict['status']:
+            msg = 'Validation failed due to:\nError:\n' +\
+                '\n'.join(validation_dict['errors']) +\
+                '\nWarning:\n' + '\n'.join(validation_dict['warnings'])
+            LOGGER.error(msg)
+            raise woudc_extcsv.ExtCSVValidatorException(msg)
+        elif validation_dict['warnings'] != []:
+            msg = '\nValidation warnings due to:\nWarning:\n' +\
+                '\n'.join(validation_dict['warnings'])
+            success = success + msg
 
     # figue out dataset
     dataset = get_extcsv_value(
