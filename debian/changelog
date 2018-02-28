@@ -1,3 +1,9 @@
+woudc-qa (0.4.0) unstable; urgency=low
+
+  * incorporate optional extcsv validation
+
+ -- WOUDC <ec.woudc.ec@canada.ca>  Wed, 28 Feb 2018 12:12:37 +0000
+
 woudc-qa (0.3.0) unstable; urgency=low
 
   * add Spectral Qa
